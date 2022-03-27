@@ -1,0 +1,33 @@
+AddDefaultCharset UTF-8
+
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin *
+    Header set Access-Control-Allow-Methods: "GET,POST,OPTIONS,DELETE,PUT"
+    Header set Access-Control-Allow-Headers: "Origin, X-Requested-With, Content-Type, Accept, Authorization, UID, SID"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%{HTTP:Authorization}] # Fix empty $_SERVER['HTTP_AUTHORIZATION'] - https://stackoverflow.com/questions/2902621/fetching-custom-authorization-header-from-incoming-php-request/46323802#46323802
+
+RewriteRule ^backend/index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+
+php_flag display_startup_errors on
+php_flag display_errors on
+php_flag html_errors on
+php_flag log_errors on
+php_flag ignore_repeated_errors off
+php_flag ignore_repeated_source off
+php_flag report_memleaks on
+php_flag track_errors on
+php_value docref_root 0
+php_value docref_ext 0
+# php_value error_log PHP_errors.log
+php_value error_reporting 337
+php_value log_errors_max_len 0

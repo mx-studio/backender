@@ -58,7 +58,4 @@ class UserController extends \adjai\backender\core\Controller {
         }
     }
 
-    public function actionAuthGoogleRedirect() {
-
-    }
 }

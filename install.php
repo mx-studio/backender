@@ -1,5 +1,13 @@
 <?php
 
+function randomString($length) {
+    $randomChars = array_merge(range('a', 'z'), range('A', 'Z'), range('0', '9'));
+    $randomString = implode('', array_map(function() use ($randomChars) {
+        return $randomChars[rand(0, count($randomChars))];
+    }, range(0, $length - 1)));
+    return $randomString;
+}
+
 function getInput($promptMessage, $defaultValue = '', $isRequired = true) {
     do {
         echo "$promptMessage" . ($defaultValue === '' ? '' : " [$defaultValue]") . ":";
@@ -41,6 +49,7 @@ foreach ($rootFiles as $rootFile) {
             ]);
         } elseif ($destinationFileName === "config.$appMode.php") {
             fillFiles($rootFileDestination, [
+                "define('JWT_SECRET_KEY', '');" => "define('JWT_SECRET_KEY', '" . randomString(24) . "');",
                 "define('DB_HOST', '');" => "define('DB_HOST', '$dbHost');",
                 "define('DB_NAME', '');" => "define('DB_NAME', '$dbName');",
                 "define('DB_USER', '');" => "define('DB_USER', '$dbUser');",

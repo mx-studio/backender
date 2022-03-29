@@ -12,10 +12,10 @@ class User extends \adjai\backender\core\DBModel {
         });
     }
 
-    public static function get($id) {
+    public static function get($id, $ifSecure = true) {
         $user = self::_getOne(['id' => $id]);
         $user['roles'] = json_decode($user['roles']);
-        return $user;
+        return $ifSecure ? self::prepare($user) : $user;
     }
 
     public static function auth($email, $password) {
@@ -30,7 +30,7 @@ class User extends \adjai\backender\core\DBModel {
         } else {
             $refreshToken = self::updateRefreshToken($userId);
             list($token, $tokenExpire) = self::getToken($userId);
-            $user = self::prepare(self::get($userId));
+            $user = self::get($userId);
             return compact('token', 'refreshToken', 'user', 'tokenExpire');
         }
     }
@@ -47,7 +47,7 @@ class User extends \adjai\backender\core\DBModel {
         } else {
             $refreshToken = self::updateRefreshToken($userId);
             list($token, $tokenExpire) = self::getToken($userId);
-            $user = self::prepare(self::get($userId));
+            $user = self::get($userId);
             return compact('token', 'refreshToken', 'user', 'tokenExpire');
         }
     }
@@ -63,7 +63,7 @@ class User extends \adjai\backender\core\DBModel {
 
     private static function getToken($id) {
         $expire = time() + JWT_TOKEN_EXPIRE;
-        $user = self::get($id);
+        $user = self::get($id, false);
         $payload = [
             'user_id' => $id,
             'roles' => $user['roles'],
@@ -73,10 +73,11 @@ class User extends \adjai\backender\core\DBModel {
         return [$token, $expire];
     }
 
-    public static function create($name, $email, $password, $role, $request_period = null) {
-        $roles = json_encode([$role]);
+    public static function create($email, $password, $roles, $name = '', $meta = []) {
+        $roles = json_encode($roles);
         $password = md5($password);
-        return self::_insert(compact('name', 'email', 'password', 'request_period', 'roles'));
+        $id = self::_insert(compact('name', 'email', 'password', 'roles'));
+        return $id;
     }
 
     public static function blockUser($id) {

@@ -1,8 +1,9 @@
 {
     "name": "adjai/backender",
     "description": "Simple backend",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "license": "GPL-2.0-or-later",
+    "minimum-stability": "stable",
     "authors": [
         {
             "name": "mx-studio",
@@ -10,10 +11,11 @@
         }
     ],
     "require": {
-        "thingengineer/mysqli-database-class": "v2.9.3",
+        "thingengineer/mysqli-database-class": "^2.9.3",
         "ext-json": "*",
         "phpmailer/phpmailer": "^6.5",
-        "firebase/php-jwt": "^5.5"
+        "firebase/php-jwt": "^5.5",
+        "google/apiclient": "2.12.1"
     },
     "type": "library",
     "autoload": {

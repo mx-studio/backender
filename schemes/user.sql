@@ -13,7 +13,6 @@ CREATE TABLE `user` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(32) NOT NULL,
-  `request_period` int DEFAULT NULL COMMENT 'За сколько дней до планируемой даты отправлять заявки',
   `refresh_token` varchar(32) DEFAULT NULL,
   `refresh_token_expire` datetime DEFAULT NULL,
   `roles` varchar(255) NOT NULL,

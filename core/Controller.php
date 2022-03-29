@@ -60,6 +60,8 @@ class Controller {
                 }
             } catch (\Firebase\JWT\ExpiredException $exception) {
                 self::outputError('expired_token');
+            } catch (\Exception $e) {
+                self::outputError('wrong_token');
             }
         } else {
             self::outputError('anauthorized_access');

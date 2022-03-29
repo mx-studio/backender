@@ -16,6 +16,15 @@ class UserController extends \adjai\backender\core\Controller {
         }
     }
 
+    public function actionRegister($userRegisterInfo) {
+        //echo "<pre>";var_dump($userRegisterInfo);echo "</pre>";
+        $id = User::create($userRegisterInfo['email'], $userRegisterInfo['password'], $userRegisterInfo['roles'], $userRegisterInfo['name'], $userRegisterInfo['meta']);
+        foreach ($userRegisterInfo['meta'] as $metaName => $metaValue) {
+            UserMeta::add($id, $metaName, $metaValue);
+        }
+        $this->outputData(User::get($id));
+    }
+
     public function actionRefreshToken($refreshToken) {
         $result = User::refreshToken($refreshToken);
         if ($result !== false) {
@@ -47,5 +56,9 @@ class UserController extends \adjai\backender\core\Controller {
         } else {
             $this->outputError('Неверный или просроченный код для изменения пароля.');
         }
+    }
+
+    public function actionAuthGoogleRedirect() {
+
     }
 }

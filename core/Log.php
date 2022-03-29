@@ -8,9 +8,11 @@ class Log {
             $token = $matches[1];
             try {
                 $authorizedData = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key(JWT_SECRET_KEY, 'HS256'));
-                $user = User::get($authorizedData->user_id);
+                $user = \adjai\backender\models\User::get($authorizedData->user_id);
                 $userInfo = "{$user['name']} (id: {$user['id']}, email: {$user['email']}, role: {$user['roles'][0]})";
             } catch (\Firebase\JWT\ExpiredException $exception) {
+
+            } catch (\Exception $e) {
 
             }
         }

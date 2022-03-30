@@ -71,8 +71,8 @@ class UserController extends \adjai\backender\core\Controller {
     }
 
     public function actionResetPassword($password, $code, $expire) {
-        $userId1 = UserMeta::getUserId('reset_password_code', $code);
-        $userId2 = UserMeta::getUserId('reset_password_expire', $expire);
+        $userId1 = UserMeta::getUserIdByMeta('reset_password_code', $code);
+        $userId2 = UserMeta::getUserIdByMeta('reset_password_expire', $expire);
         if ($userId1 === $userId2 && !is_null($userId1) && $expire >= time()) {
             UserMeta::remove($userId1, 'reset_password_code');
             UserMeta::remove($userId1, 'reset_password_expire');

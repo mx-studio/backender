@@ -9,16 +9,19 @@ SET time_zone = "+00:00";
 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
-  `id` int NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `email` varchar(255) NOT NULL,
-  `password` varchar(32) NOT NULL,
-  `refresh_token` varchar(32) DEFAULT NULL,
-  `refresh_token_expire` datetime DEFAULT NULL,
-  `roles` varchar(255) NOT NULL,
-  `deleted_time` datetime DEFAULT NULL,
-  `blocked_time` datetime DEFAULT NULL
+                        `id` int NOT NULL,
+                        `name` varchar(255) NOT NULL,
+                        `email` varchar(255) NOT NULL,
+                        `password` varchar(32) NOT NULL,
+                        `refresh_token` varchar(32) DEFAULT NULL,
+                        `refresh_token_expire` datetime DEFAULT NULL,
+                        `roles` varchar(255) NOT NULL,
+                        `deleted_time` datetime DEFAULT NULL,
+                        `blocked_time` datetime DEFAULT NULL,
+                        `network` enum('vk.com','google.com','mail.ru','ok.ru') DEFAULT NULL,
+                        `network_user_id` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 -- --------------------------------------------------------
 
@@ -42,8 +45,9 @@ CREATE TABLE `user_meta` (
 -- Индексы таблицы `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `user_id_uindex` (`id`);
+    ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `user_id_uindex` (`id`),
+  ADD UNIQUE KEY `unique_user` (`email`,`network`);
 
 --
 -- Индексы таблицы `user_meta`

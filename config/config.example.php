@@ -12,6 +12,7 @@ define('EMAIL_TEMPLATES_DIRECTORY', ABSPATH . '/views/emails/');
 // Роли пользователей (ключ - системное имя роли, значение - отображаемое в интерфейсе имя)
 define('USER_ROLES', [
     'admin' => 'Администратор',
+    'user' => 'Пользователь',
 ]);
 
 define('FILES_UPLOAD_PATH', ABSPATH . '/upload/');

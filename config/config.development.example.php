@@ -25,3 +25,5 @@ define('JWT_REFRESH_TOKEN_EXPIRE', 60 * 60 * 24 * 30);
 define('JWT_TOKEN_EXPIRE', 60 * 5);
 
 define('RESET_PASSWORD_EXPIRE', 60 * 60 * 24);
+
+define('ALLOWED_HTTP_ORIGINS', ['http://localhost:4200']);

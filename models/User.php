@@ -18,13 +18,17 @@ class User extends \adjai\backender\core\DBModel {
         return $ifSecure ? self::prepare($user) : $user;
     }
 
-    public static function auth($email, $password) {
-        $userId = self::_getValue('id', [
+    public static function auth($email, $password, $network = null) {
+        $where = [
             'email' => $email,
-            'password' => md5($password),
             'deleted_time' => [null, 'IS'],
             'blocked_time' => [null, 'IS'],
-        ]);
+            'network' => is_null($network) ? [null, 'IS'] : $network,
+        ];
+        if (!is_null($password)) {
+            $where['password'] = md5($password);
+        }
+        $userId = self::_getValue('id', $where);
         if (is_null($userId)) {
             return false;
         } else {
@@ -73,10 +77,10 @@ class User extends \adjai\backender\core\DBModel {
         return [$token, $expire];
     }
 
-    public static function create($email, $password, $roles, $name = '', $meta = []) {
+    public static function create($email, $password, $roles, $name = '', $network = null, $network_user_id = null, $meta = []) {
         $roles = json_encode($roles);
         $password = md5($password);
-        $id = self::_insert(compact('name', 'email', 'password', 'roles'));
+        $id = self::_insert(compact('name', 'email', 'password', 'roles', 'network', 'network_user_id'));
         return $id;
     }
 
@@ -94,6 +98,13 @@ class User extends \adjai\backender\core\DBModel {
 
     public static function updatePassword($userId, $password) {
         self:self::_update(['id' => $userId], ['password' => $password]);
+    }
+
+    public static function getByNetwork($network, $networkUserId) {
+        return self::_getOne([
+            'network' => $network,
+            'network_user_id' => $networkUserId,
+        ]);
     }
 
     public static function getByEmail($email) {

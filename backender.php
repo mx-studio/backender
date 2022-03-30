@@ -10,6 +10,10 @@ class Backender {
         }
         require_once 'config.php';
 
+        if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], ALLOWED_HTTP_ORIGINS)) {
+            header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+        }
+
         spl_autoload_register(function($className) {
             $directories = [
                 dirname(__DIR__) . '/',

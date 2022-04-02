@@ -62,6 +62,7 @@ class Mail {
                 $subject = $match[1];
             }
         }
+
         if ($message !== false) {
             return self::send($recipient, $subject, $message, $attachments);
         } else {
@@ -70,7 +71,7 @@ class Mail {
     }
 
     private static function getTemplate($template, $data) {
-        $templateFileName = EMAIL_TEMPLATES_DIRECTORY . "/$template.html";
+        $templateFileName = EMAIL_TEMPLATES_DIRECTORY . "$template.html";
         if (file_exists($templateFileName)) {
             $content = file_get_contents($templateFileName);
             foreach (Utils::arrayFlatten($data) as $key => $value) {

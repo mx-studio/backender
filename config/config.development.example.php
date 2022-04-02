@@ -27,3 +27,6 @@ define('JWT_TOKEN_EXPIRE', 60 * 5);
 define('RESET_PASSWORD_EXPIRE', 60 * 60 * 24);
 
 define('ALLOWED_HTTP_ORIGINS', ['http://localhost:4200']);
+
+define('NEED_ACTIVATION', true);
+define('ACCOUNT_ACTIVATION_LINK_LIFETIME', 24 * 3600);

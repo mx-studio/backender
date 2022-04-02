@@ -9,6 +9,7 @@ class Router {
     private $content = '';
     private $isPartialOutput;
     private $path = false;
+    private $inputData = [];
 
     public function __construct() {
         $this->init();
@@ -78,6 +79,7 @@ class Router {
                             $input = file_get_contents('php://input');
                             $sourceInput = $input ? json_decode($input, true) : [];
                         }
+                        $this->inputData = $sourceInput;
                         foreach ($reflectionMethod->getParameters() as $parameter) {
                             if (isset($sourceInput[$parameter->name])) {
                                 $arguments[] = $sourceInput[$parameter->name];
@@ -138,6 +140,10 @@ class Router {
     public function getIsPartialOutput()
     {
         return $this->isPartialOutput;
+    }
+
+    public function getInputData() {
+        return $this->inputData;
     }
 
 }

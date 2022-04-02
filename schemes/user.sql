@@ -18,8 +18,10 @@ CREATE TABLE `user` (
                         `roles` varchar(255) NOT NULL,
                         `deleted_time` datetime DEFAULT NULL,
                         `blocked_time` datetime DEFAULT NULL,
-                        `network` enum('vk.com','google.com','mail.ru','ok.ru') DEFAULT NULL,
-                        `network_user_id` varchar(30) DEFAULT NULL
+                        `network` enum('VK','Google','Ok','MailRu') DEFAULT NULL,
+                        `network_user_id` varchar(30) DEFAULT NULL,
+                        `created` datetime NOT NULL,
+                        `activated_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 

@@ -82,6 +82,10 @@ foreach ($createDirectories as $directory) {
     }
 }
 
+foreach (glob(__DIR__ . '/views/emails/*.html') as $emailTemplate) {
+    copy($emailTemplate, EMAIL_TEMPLATES_DIRECTORY . '/' . basename($emailTemplate));
+}
+
 $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, null, null, DB_CHARSET);
 $db->rawQuery("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
 $db->disconnect();

@@ -2,6 +2,9 @@
 namespace adjai\backender\models;
 
 use adjai\backender\core\Core;
+use adjai\backender\core\Error;
+use adjai\backender\core\Mail;
+use adjai\backender\core\Utils;
 
 class User extends \adjai\backender\core\DBModel {
 
@@ -21,22 +24,32 @@ class User extends \adjai\backender\core\DBModel {
     public static function auth($email, $password, $network = null) {
         $where = [
             'email' => $email,
-            'deleted_time' => [null, 'IS'],
+            /*'deleted_time' => [null, 'IS'],
             'blocked_time' => [null, 'IS'],
+            'activated_time' => [null, 'IS NOT'],*/
             'network' => is_null($network) ? [null, 'IS'] : $network,
         ];
         if (!is_null($password)) {
             $where['password'] = md5($password);
         }
-        $userId = self::_getValue('id', $where);
-        if (is_null($userId)) {
-            return false;
+        $user = self::_getOne($where);
+        if (is_null($user) || !is_null($user['deleted_time'])) {
+            return new Error('Пользователь не найден');
         } else {
-            $refreshToken = self::updateRefreshToken($userId);
-            list($token, $tokenExpire) = self::getToken($userId);
-            $user = self::get($userId);
-            return compact('token', 'refreshToken', 'user', 'tokenExpire');
+            if (!is_null($user['blocked_time'])) {
+                return new Error('Пользователь заблокирован');
+            } elseif (is_null($user['activated_time'])) {
+                return new Error('Аккаунт неактивирован');
+            }
+            return self::getAuthById($user['id']);
         }
+    }
+
+    public static function getAuthById($id) {
+        $refreshToken = self::updateRefreshToken($id);
+        list($token, $tokenExpire) = self::getToken($id);
+        $user = self::get($id);
+        return compact('token', 'refreshToken', 'user', 'tokenExpire');
     }
 
     public static function refreshToken($refreshToken) {
@@ -80,7 +93,11 @@ class User extends \adjai\backender\core\DBModel {
     public static function create($email, $password, $roles, $name = '', $network = null, $network_user_id = null, $meta = []) {
         $roles = json_encode($roles);
         $password = md5($password);
-        $id = self::_insert(compact('name', 'email', 'password', 'roles', 'network', 'network_user_id'));
+        $created = date('Y-m-d H:i:s');
+        $id = self::_insert(compact('name', 'email', 'password', 'roles', 'network', 'network_user_id', 'created'));
+        foreach ($meta as $key => $value) {
+            UserMeta::add($id, $key, $value);
+        }
         return $id;
     }
 
@@ -118,9 +135,60 @@ class User extends \adjai\backender\core\DBModel {
     public static function getResetPasswordLink($id) {
         $code = md5(uniqid());
         $expire = time() + RESET_PASSWORD_EXPIRE;
-        UserMeta::update($id, 'reset_password_code', $code);
-        UserMeta::update($id, 'reset_password_expire', $expire);
-        return SITE_FRONTEND_URL . "reset-password/$expire/$code";
+        UserMeta::update($id, '__reset_password_code', $code);
+        UserMeta::update($id, '__reset_password_expire', $expire);
+        return SITE_FRONTEND_URL . "reset-password/$id/$code";
+    }
+
+    public static function activate($id, $activationCode = false) {
+        if ($activationCode === false) {
+            self::_update(['id' => $id], ['activated_time' => date('Y-m-d H:i:s')]);
+            return true;
+        }
+        $user = self::get($id);
+        if (!is_null($user) && self::checkAccountActivationCode($id, $activationCode)) {
+            UserMeta::remove($id, '__account_activation_code');
+            UserMeta::remove($id, '__account_activation_code_expire');
+            self::_update(['id' => $id], ['activated_time' => date('Y-m-d H:i:s')]);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public static function sendActivation($userId) {
+        $user = self::get($userId);
+        if (!is_null($user)) {
+            $accountActivationCode = uniqid('', true);
+            UserMeta::update($user['id'], '__account_activation_code', $accountActivationCode);
+            UserMeta::update($user['id'], '__account_activation_code_expire', time() + ACCOUNT_ACTIVATION_LINK_LIFETIME);
+            if (in_array('cafe-manager', $user['roles'])) {
+                $user['activationLink'] = SITE_FRONTEND_URL . "auth/activation/$userId/" . $accountActivationCode;
+            } else {
+                $user['activationLink'] = SITE_FRONTEND_URL . "auth/activation/$userId/" . $accountActivationCode;
+            }
+
+            Mail::sendUsingTemplate('user-activation', $user['email'], null, Utils::arrayFlatten($user));
+        }
+    }
+
+    public static function checkAccountActivationCode($userId, $accountActivationCode) {
+        $correctResetPasswordCode = UserMeta::get($userId, '__account_activation_code');
+        //echo "<pre>";var_dump($correctResetPasswordCode, $accountActivationCode);echo "</pre>";exit;
+        if ($correctResetPasswordCode === $accountActivationCode) {
+            $expire = UserMeta::get($userId, '__account_activation_code_expire');
+            return time() <= $expire;
+        }
+        return false;
+    }
+
+    public static function checkResetPasswordCode($userId, $resetPasswordCode) {
+        $correctResetPasswordCode = UserMeta::get($userId, '__reset_password_code');
+        if ($correctResetPasswordCode === $resetPasswordCode) {
+            $expire = UserMeta::get($userId, '__reset_password_expire');
+            return time() <= $expire;
+        }
+        return false;
     }
 
 }

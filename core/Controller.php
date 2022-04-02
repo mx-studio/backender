@@ -12,6 +12,14 @@ class Controller {
         }
     }
 
+    protected function getAuthorizesUserId() {
+        return $this->getAuthorizedData('user_id', null);
+    }
+
+    protected function getAuthorizedUserRoles() {
+        return $this->getAuthorizedData('roles', null);
+    }
+
     protected function outputResponse(Response $response) {
         http_response_code($response->getCode());
         header('Content-Type: application/json');
@@ -43,7 +51,7 @@ class Controller {
         self::outputResponse(new Response(false, $errorMessage));
     }
 
-    protected function restrictAccessForRoles($roles = []) {
+    protected function restrictAccess($roles = []) {
         if (PHP_SAPI === 'cli') {
             $this->authorizedData = (object) CLI_ACCESS;
             if (count($roles) && count(array_diff($roles, $this->getAuthorizedData('roles'))) === count($roles)) {

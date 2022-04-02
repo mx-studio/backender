@@ -1,7 +1,11 @@
 <?php
 namespace adjai\backender\controllers;
 
+use adjai\backender\core\Core;
+use adjai\backender\core\Error;
 use adjai\backender\core\Mail;
+use adjai\backender\core\Response;
+use adjai\backender\core\Router;
 use adjai\backender\models\User;
 use adjai\backender\models\UserMeta;
 use WpOrg\Requests\Requests;
@@ -10,10 +14,10 @@ class UserController extends \adjai\backender\core\Controller {
 
     public function actionAuth($email, $password) {
         $result = User::auth($email, $password);
-        if ($result !== false) {
+        if (!$result instanceof Error) {
             $this->outputData($result);
         } else {
-            $this->outputError('Неверный логин или пароль');
+            $this->outputError($result->getMessage());
         }
     }
 
@@ -23,10 +27,117 @@ class UserController extends \adjai\backender\core\Controller {
         foreach ($userRegisterInfo['meta'] as $metaName => $metaValue) {
             UserMeta::add($id, $metaName, $metaValue);
         }
+        if (NEED_ACTIVATION) {
+            User::sendActivation($id);
+        } else {
+            User::activate($id);
+        }
         $this->outputData(User::get($id));
     }
 
-    public function actionSocialAuth($network, $networkUserId, $accessToken, $extraInfo = []) {
+    public function actionSocialAuth() {
+        $accessCodeInfo = Router::getInstance()->getInputData();
+        $requestUserInfoUri = $accessCodeInfo['requestUserInfoUri'];
+        $requestUserInfoUri = preg_replace_callback('|(\{([^}]+)\})|', function($matches) use ($accessCodeInfo) {
+            return $accessCodeInfo[$matches[2]] ?? $matches[1];
+        }, $requestUserInfoUri);
+        if ($accessCodeInfo['provider'] === 'MailRu') {
+            /*$signature = md5("app_id=" . $accessCodeInfo['clientId'] . "method=users.getInfosecure=1session_key=" . $accessCodeInfo['access_token'] . $accessCodeInfo['clientSecret']);
+            $requestUserInfoUri = str_replace('{signature}', $signature, $requestUserInfoUri);*/
+        } elseif ($accessCodeInfo['provider'] === 'Ok') {
+            preg_match('/(?:\?|&)fields=([^&]+)(?:$|&)/', $requestUserInfoUri, $matches);
+            $sessionSecretKey = $accessCodeInfo['session_secret_key'];
+            $params = [
+                'application_key' => $accessCodeInfo['publicKey'],
+                'access_token' => $accessCodeInfo['access_token'],
+                'fields' => $matches[1],
+            ];
+            ksort($params);
+            $signature = strtolower(md5(implode('', array_map(function($key) use ($params) {
+                    return "$key=" . $params[$key];
+                }, array_filter(array_keys($params), function($key) {
+                    return $key !== 'access_token';
+                }))) . $sessionSecretKey));
+            $requestUserInfoUri = str_replace('{signature}', $signature, $requestUserInfoUri);
+        }
+        $response = Requests::get($requestUserInfoUri);
+        $info = json_decode($response->body, true);
+        $registrationInfo = null;
+
+        if ($accessCodeInfo['provider'] === 'VK') {
+            $info = $info['response'][0];
+            $registrationInfo = [
+                'name' => trim($info['last_name'] . ' ' . $info['first_name']),
+                'email' => $accessCodeInfo['email'],
+                'network_user_id' => $accessCodeInfo['user_id'],
+                'meta' => [
+                    'city' => $info['city']['title'],
+                    'country' => $info['country']['title'],
+                    'first_name' => $info['first_name'],
+                    'last_name' => $info['last_name'],
+                ],
+            ];
+        } elseif ($accessCodeInfo['provider'] === 'Google') {
+            $registrationInfo = [
+                'name' => $info['name'],
+                'email' => $info['email'],
+                'network_user_id' => $info['sub'],
+                'meta' => [
+                    'first_name' => $info['given_name'],
+                    'last_name' => $info['family_name'],
+                ],
+            ];
+        } elseif ($accessCodeInfo['provider'] === 'MailRu') {
+            $info = $info[0];
+            $registrationInfo = [
+                'name' => trim($info['last_name'] . ' ' . $info['first_name']),
+                'email' => $info['email'],
+                'network_user_id' => $info['uid'],
+                'meta' => [
+                    'first_name' => $info['first_name'],
+                    'last_name' => $info['last_name'],
+                    'age' => $info['age'],
+                    'sex' => $info['sex'],
+                    'birthday' => $info['birthday'],
+                ],
+            ];
+            if ($info['has_pic']) {
+                $requestUserInfoUri['meta']['picture'] = $info['pic_big'];
+            }
+        } elseif ($accessCodeInfo['provider'] === 'Ok') {
+            $registrationInfo = [
+                'name' => trim($info['last_name'] . ' ' . $info['first_name']),
+                'email' => $info['uid'] . '@ok.ru', // todo Написать в техподдержку Одноклассников, т.к. email они выдают через api только по письму https://apiok.ru/ext/oauth/permissions
+                'network_user_id' => $info['uid'],
+                'meta' => [
+                    'first_name' => $info['first_name'],
+                    'last_name' => $info['last_name'],
+                    'age' => $info['age'],
+                    'gender' => $info['gender'],
+                    'birthday' => $info['birthday'],
+                    'picture' => $info['pic_full'],
+                    'url_profile' => $info['url_profile'],
+                    'city' => $info['location']['city'],
+                    'country' => $info['location']['countryName'],
+                ],
+            ];
+        }
+        $info['token_info'] = $accessCodeInfo;
+        if (!is_null($registrationInfo)) {
+            $user = User::getByNetwork($accessCodeInfo['provider'], $registrationInfo['network_user_id']);
+            if (is_null($user)) {
+                $userId = User::create($registrationInfo['email'], uniqid(), ['user'], $registrationInfo['name'], $accessCodeInfo['provider'], $registrationInfo['network_user_id'], $registrationInfo['meta'] ?? []);
+                //echo "<pre>";var_dump(Core::$db->getLastError());echo "</pre>";
+                User::activate($userId);
+            }
+            //exit;
+            $this->outputData(User::auth($registrationInfo['email'], null, $accessCodeInfo['provider']));
+        }
+        //$this->outputData($inputData);
+    }
+
+    public function actionSocialAuthOld($network, $networkUserId, $accessToken, $extraInfo = []) {
+        // https://www.googleapis.com/oauth2/v3/userinfo?access_token=
         if ($network === 'vk.com') {
             $url = "https://api.vk.com/method/users.get?user_ids=$networkUserId&fields=city,country&access_token=$accessToken&v=5.131";
             $response = Requests::get($url);
@@ -36,19 +147,16 @@ class UserController extends \adjai\backender\core\Controller {
                 'email' => $extraInfo['email'],
             ];
         }
+
         $user = User::getByNetwork($network, $networkUserId);
         //$this->outputData($socialInfo);exit;
         if (is_null($user)) {
             $userId = User::create($userInfo['email'], uniqid(), ['user'], $userInfo['name'], $network, $networkUserId);
+            User::activate($userId);
             //$user = User::get($userId);
         }
         $this->outputData(User::auth($userInfo['email'], null, $network));
     }
-
-    /*public function actionSocialAuth($network, $networkUserId, $email, $name, $role = 'user') {
-        $user = User::getByEmail($email);
-        if (is_null($user)) {}
-    }*/
 
     public function actionRefreshToken($refreshToken) {
         $result = User::refreshToken($refreshToken);
@@ -70,21 +178,37 @@ class UserController extends \adjai\backender\core\Controller {
         }
     }
 
-    public function actionResetPassword($password, $code, $expire) {
-        $userId1 = UserMeta::getUserIdByMeta('reset_password_code', $code);
-        $userId2 = UserMeta::getUserIdByMeta('reset_password_expire', $expire);
-        if ($userId1 === $userId2 && !is_null($userId1) && $expire >= time()) {
-            UserMeta::remove($userId1, 'reset_password_code');
-            UserMeta::remove($userId1, 'reset_password_expire');
-            User::updatePassword($userId1, md5($password));
-            $this->outputData();
+    public function actionResetPassword($password, $code, $userId) {
+        $userId2 = UserMeta::getUserIdByMeta('__reset_password_code', $code);
+        if (+$userId === $userId2 && !is_null($userId)) {
+            $expire = +UserMeta::get($userId, '__reset_password_expire');
+            if ($expire > time()) {
+                UserMeta::remove($userId, '__reset_password_code');
+                UserMeta::remove($userId, '__reset_password_expire');
+                User::updatePassword($userId, md5($password));
+                $this->outputData();
+            } else {
+                $this->outputError('Просроченный код для изменения пароля.');
+            }
         } else {
-            $this->outputError('Неверный или просроченный код для изменения пароля.');
+            $this->outputError('Неверный код для изменения пароля.');
         }
     }
 
-    public function actionAuthVKRedirect() {
+    public function actionActivate($id, $activationCode) {
+        if (User::activate($id, $activationCode)) {
+            $this->outputResponse(new Response(true, 'Активация успешно выполнена', User::getAuthById($id)));
+        } else {
+            $this->outputError('Неверная ссылка для активации аккаунта, либо срок действия ссылки истек.');
+        }
+    }
 
+    public function actionCheckResetPassword($id, $code) {
+        if (User::checkResetPasswordCode($id, $code)) {
+            $this->outputData();
+        } else {
+            $this->outputError('Неверная ссылка для задания нового пароля, либо срок действия ссылки истек.');
+        }
     }
 
 }

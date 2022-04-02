@@ -3,6 +3,8 @@ namespace adjai\backender\core;
 
 //use MysqliDb;
 
+// todo реализовать гугл-капчу
+
 class Core {
     static \MysqliDb $db;
     private $template = TEMPLATE;
@@ -83,4 +85,5 @@ class Core {
     public function outputTemplate() {
         include_once ABSPATH . "/templates/$this->template.php";
     }
+
 }

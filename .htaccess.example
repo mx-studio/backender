@@ -15,7 +15,7 @@ RewriteRule .* - [e=HTTP_AUTHORIZATION:%{HTTP:Authorization}] # Fix empty $_SERV
 RewriteRule ^backend/index\.php$ - [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /index.php [L]
+RewriteRule . backend/index.php [L]
 </IfModule>
 
 php_flag display_startup_errors on

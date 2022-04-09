@@ -26,16 +26,17 @@ function fillFiles($filename, $replacements) {
 }
 
 $rootDirectory = getInput('Define app root directory', dirname(dirname(dirname(__DIR__))));
+$webappDirectory = getInput('Define web app base directory (trailing slash included)', '/');
 
 $appMode = getInput('Define app mode ("development" or "production")', 'development');
 $dbHost = getInput('Define DB host', 'localhost');
-$dbUser = getInput('Define DB name', 'root');
+$dbUser = getInput('Define DB user', 'root');
 $dbName = getInput('Define DB name', 'app' . uniqid());
 $dbPassword = getInput('Define DB password', 'root', false);
 
 //echo "Defined: $definedRootDirectory";
 
-$rootFiles = ['.htaccess.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
+$rootFiles = ['index.php.example', '.htaccess.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
 //$rootFiles = ['config/config.example.php'];
 
 foreach ($rootFiles as $rootFile) {
@@ -45,6 +46,7 @@ foreach ($rootFiles as $rootFile) {
         copy($rootFile, $rootFileDestination);
         if ($destinationFileName === 'config.php') {
             fillFiles($rootFileDestination, [
+                "define('BACKEND_BASE_URL', '/');" => "define('BACKEND_BASE_URL', '$webappDirectory');",
                 "define('MODE', '');" => "define('MODE', '$appMode');",
             ]);
         } elseif ($destinationFileName === "config.$appMode.php") {
@@ -54,6 +56,11 @@ foreach ($rootFiles as $rootFile) {
                 "define('DB_NAME', '');" => "define('DB_NAME', '$dbName');",
                 "define('DB_USER', '');" => "define('DB_USER', '$dbUser');",
                 "define('DB_PASSWORD', '');" => "define('DB_PASSWORD', '$dbPassword');",
+            ]);
+        } elseif ($destinationFileName === ".htaccess") {
+            fillFiles($rootFileDestination, [
+                "RewriteRule . /index.php [L]" => "RewriteRule . " . substr($webappDirectory, 1) . "index.php [L]",
+                "RewriteRule ^index\.php$ - [L]" => "RewriteRule ^" . substr($webappDirectory, 1) . "index\.php$ - [L]",
             ]);
         }
         echo "\t$rootFileDestination has been created\n";

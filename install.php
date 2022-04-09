@@ -1,4 +1,5 @@
 <?php
+chdir(__DIR__);
 
 function randomString($length) {
     $randomChars = array_merge(range('a', 'z'), range('A', 'Z'), range('0', '9'));
@@ -59,8 +60,8 @@ foreach ($rootFiles as $rootFile) {
             ]);
         } elseif ($destinationFileName === ".htaccess") {
             fillFiles($rootFileDestination, [
-                "RewriteRule . /index.php [L]" => "RewriteRule . " . substr($webappDirectory, 1) . "index.php [L]",
-                "RewriteRule ^index\.php$ - [L]" => "RewriteRule ^" . substr($webappDirectory, 1) . "index\.php$ - [L]",
+                "RewriteRule . index.php [L]" => "RewriteRule . {$webappDirectory}index.php [L]",
+                "RewriteRule ^index\.php$ - [L]" => "RewriteRule ^{$webappDirectory}index\.php$ - [L]",
             ]);
         }
         echo "\t$rootFileDestination has been created\n";

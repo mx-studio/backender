@@ -86,4 +86,19 @@ class Core {
         include_once ABSPATH . "/templates/$this->template.php";
     }
 
+    public static function getAuthorizationData() {
+        if (isset($_SERVER['HTTP_AUTHORIZATION']) && preg_match('|^Bearer\s(\S+)$|', $_SERVER['HTTP_AUTHORIZATION'], $matches)) {
+            $token = $matches[1];
+            try {
+                return \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key(JWT_SECRET_KEY, 'HS256'));
+            } catch (\Firebase\JWT\ExpiredException $exception) {
+                return new Error('expired_token');
+            } catch (\Exception $e) {
+                return new Error('wrong_token');
+            }
+        } else {
+            return new Error('anauthorized_access');
+        }
+    }
+
 }

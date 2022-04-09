@@ -30,3 +30,5 @@ define('ALLOWED_HTTP_ORIGINS', ['http://localhost:4200']);
 
 define('NEED_ACTIVATION', true);
 define('ACCOUNT_ACTIVATION_LINK_LIFETIME', 24 * 3600);
+
+define('LANGUAGE', 'russian');

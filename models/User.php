@@ -24,9 +24,6 @@ class User extends \adjai\backender\core\DBModel {
     public static function auth($email, $password, $network = null) {
         $where = [
             'email' => $email,
-            /*'deleted_time' => [null, 'IS'],
-            'blocked_time' => [null, 'IS'],
-            'activated_time' => [null, 'IS NOT'],*/
             'network' => is_null($network) ? [null, 'IS'] : $network,
         ];
         if (!is_null($password)) {
@@ -49,6 +46,7 @@ class User extends \adjai\backender\core\DBModel {
         $refreshToken = self::updateRefreshToken($id);
         list($token, $tokenExpire) = self::getToken($id);
         $user = self::get($id);
+        $user['registration_incomplete'] = !is_null(UserMeta::get($id, '__registration_incomplete', null));
         return compact('token', 'refreshToken', 'user', 'tokenExpire');
     }
 
@@ -91,14 +89,22 @@ class User extends \adjai\backender\core\DBModel {
     }
 
     public static function create($email, $password, $roles, $name = '', $network = null, $network_user_id = null, $meta = []) {
-        $roles = json_encode($roles);
-        $password = md5($password);
-        $created = date('Y-m-d H:i:s');
-        $id = self::_insert(compact('name', 'email', 'password', 'roles', 'network', 'network_user_id', 'created'));
-        foreach ($meta as $key => $value) {
-            UserMeta::add($id, $key, $value);
+        $user = self::_getOne([
+            'email' => $email,
+            'network' => is_null($network) ? [null, 'IS'] : $network,
+        ]);
+        if (is_null($user)) {
+            $roles = json_encode($roles);
+            $password = md5($password);
+            $created = date('Y-m-d H:i:s');
+            $id = self::_insert(compact('name', 'email', 'password', 'roles', 'network', 'network_user_id', 'created'));
+            foreach ($meta as $key => $value) {
+                UserMeta::add($id, $key, $value);
+            }
+            return $id;
+        } else {
+            return new Error('Пользователь с данным email уже зарегистрирован в системе');
         }
-        return $id;
     }
 
     public static function blockUser($id) {

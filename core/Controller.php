@@ -59,20 +59,14 @@ class Controller {
             }
             return;
         }
-        if (isset($_SERVER['HTTP_AUTHORIZATION']) && preg_match('|^Bearer\s(\S+)$|', $_SERVER['HTTP_AUTHORIZATION'], $matches)) {
-            $token = $matches[1];
-            try {
-                $this->authorizedData = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key(JWT_SECRET_KEY, 'HS256'));
-                if (count($roles) && count(array_diff($roles, $this->getAuthorizedData('roles'))) === count($roles)) {
-                    self::outputError('no_access');
-                }
-            } catch (\Firebase\JWT\ExpiredException $exception) {
-                self::outputError('expired_token');
-            } catch (\Exception $e) {
-                self::outputError('wrong_token');
-            }
+        $authorizedData = Core::getAuthorizationData();
+        if ($authorizedData instanceof Error) {
+            $this->outputError($authorizedData->getMessage());
         } else {
-            self::outputError('anauthorized_access');
+            $this->authorizedData = $authorizedData;
+            if (count($roles) && count(array_diff($roles, $this->getAuthorizedData('roles'))) === count($roles)) {
+                self::outputError('no_access');
+            }
         }
     }
 }

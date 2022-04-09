@@ -14,6 +14,11 @@ define('USER_ROLES', [
     'admin' => 'Администратор',
     'user' => 'Пользователь',
 ]);
+define('REGISTER_DEFAULT_USER_ROLE', 'user'); // Роль, задаваемая пользователю при регистрации
+// Роли пользователей, которые может создавать пользователь в зависимости от его собственной роли
+define('REGISTER_ALLOWED_ROLES', [
+    'admin' => ['user'],
+]);
 
 define('FILES_UPLOAD_PATH', ABSPATH . '/upload/');
 

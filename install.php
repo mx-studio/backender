@@ -68,6 +68,7 @@ include_once $rootDirectory . '/vendor/autoload.php';
 include_once 'config.php';
 
 $createDirectories = [
+    ABSPATH . "/languages/",
     ABSPATH . "/controllers/",
     ABSPATH . "/models/",
     ABSPATH . "/views/",
@@ -84,6 +85,10 @@ foreach ($createDirectories as $directory) {
 
 foreach (glob(__DIR__ . '/views/emails/*.html') as $emailTemplate) {
     copy($emailTemplate, EMAIL_TEMPLATES_DIRECTORY . '/' . basename($emailTemplate));
+}
+
+foreach (glob(__DIR__ . '/languages/*') as $file) {
+    copy($file, ABSPATH . '/languages/' . basename($file));
 }
 
 $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, null, null, DB_CHARSET);

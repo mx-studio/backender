@@ -3,6 +3,7 @@ namespace adjai\backender\controllers;
 
 use adjai\backender\core\Core;
 use adjai\backender\core\Error;
+use adjai\backender\core\Language;
 use adjai\backender\core\Mail;
 use adjai\backender\core\Response;
 use adjai\backender\core\Router;
@@ -22,17 +23,40 @@ class UserController extends \adjai\backender\core\Controller {
     }
 
     public function actionRegister($userRegisterInfo) {
-        //echo "<pre>";var_dump($userRegisterInfo);echo "</pre>";
-        $id = User::create($userRegisterInfo['email'], $userRegisterInfo['password'], $userRegisterInfo['roles'], $userRegisterInfo['name'], $userRegisterInfo['network'] ?? null, $userRegisterInfo['network_user_id'] ?? null, $userRegisterInfo['meta'] ?? []);
-        foreach ($userRegisterInfo['meta'] as $metaName => $metaValue) {
-            UserMeta::add($id, $metaName, $metaValue);
-        }
-        if (NEED_ACTIVATION) {
-            User::sendActivation($id);
+        $authorizationData = Core::getAuthorizationData();
+        if ($authorizationData instanceof Error) {
+            $allowedRoles = [REGISTER_DEFAULT_USER_ROLE];
         } else {
-            User::activate($id);
+            $allowedRoles = [];
+            $roles = $authorizationData->roles;
+            foreach ($roles as $role) {
+                if (isset(REGISTER_ALLOWED_ROLES[$role])) {
+                    $allowedRoles = array_merge($allowedRoles, REGISTER_ALLOWED_ROLES[$role]);
+                }
+            }
+            $allowedRoles = array_unique($allowedRoles);
         }
-        $this->outputData(User::get($id));
+
+        $userRegisterInfo['roles'] = array_map(function($role) {
+            return $role === '' ? REGISTER_DEFAULT_USER_ROLE : $role;
+        }, $userRegisterInfo['roles']);
+
+        if (count(array_diff($userRegisterInfo['roles'], $allowedRoles))) {
+            $this->outputError('Недостаточно прав доступа');
+        }
+
+        $result = User::create($userRegisterInfo['email'], $userRegisterInfo['password'], $userRegisterInfo['roles'], $userRegisterInfo['name'], $userRegisterInfo['network'] ?? null, $userRegisterInfo['network_user_id'] ?? null, $userRegisterInfo['meta'] ?? []);
+        if ($result instanceof Error) {
+            $this->outputError($result->getMessage());
+        } else {
+            $id = $result;
+            if (NEED_ACTIVATION) {
+                User::sendActivation($id);
+            } else {
+                User::activate($id);
+            }
+            $this->outputData(User::get($id));
+        }
     }
 
     public function actionSocialAuth() {
@@ -126,7 +150,7 @@ class UserController extends \adjai\backender\core\Controller {
         if (!is_null($registrationInfo)) {
             $user = User::getByNetwork($accessCodeInfo['provider'], $registrationInfo['network_user_id']);
             if (is_null($user)) {
-                $userId = User::create($registrationInfo['email'], uniqid(), ['user'], $registrationInfo['name'], $accessCodeInfo['provider'], $registrationInfo['network_user_id'], $registrationInfo['meta'] ?? []);
+                $userId = User::create($registrationInfo['email'], uniqid(), [REGISTER_DEFAULT_USER_ROLE], $registrationInfo['name'], $accessCodeInfo['provider'], $registrationInfo['network_user_id'], $registrationInfo['meta'] ?? []);
                 //echo "<pre>";var_dump(Core::$db->getLastError());echo "</pre>";
                 User::activate($userId);
             }
@@ -151,7 +175,7 @@ class UserController extends \adjai\backender\core\Controller {
         $user = User::getByNetwork($network, $networkUserId);
         //$this->outputData($socialInfo);exit;
         if (is_null($user)) {
-            $userId = User::create($userInfo['email'], uniqid(), ['user'], $userInfo['name'], $network, $networkUserId);
+            $userId = User::create($userInfo['email'], uniqid(), [REGISTER_DEFAULT_USER_ROLE], $userInfo['name'], $network, $networkUserId);
             User::activate($userId);
             //$user = User::get($userId);
         }

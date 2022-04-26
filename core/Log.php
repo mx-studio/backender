@@ -33,4 +33,9 @@ class Log {
         }
         file_put_contents($logFile, implode("\t", $output) . "\n", FILE_APPEND);
     }
+
+
+    public static function write($text, $section = 'app') {
+        file_put_contents(LOG_DIRECTORY . $section . ".log", date('d.m.y H:i:s') . " " . $text . PHP_EOL, FILE_APPEND);
+    }
 }

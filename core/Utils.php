@@ -50,4 +50,13 @@ class Utils {
         $path = SITE_BACKEND_URL . substr(str_replace(str_replace('\\', '/', ABSPATH), '', $path), 1);
         return $path;
     }
+
+    /**
+     * Возвращает текущую дату для вставки в mysql
+     * @return array|\string[][]
+     * @throws \Exception
+     */
+    public static function nowSQL() {
+        return Core::$db->now();
+    }
 }

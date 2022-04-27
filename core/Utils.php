@@ -39,4 +39,15 @@ class Utils {
         }
         return array_keys($ar) === range(0, count($ar) - 1);
     }
+
+    /**
+     * Преобразует путь файловой системы в url
+     * @param $path
+     * @return string
+     */
+    public static function localPathToUrl($path) {
+        $path = str_replace('\\', '/', $path);
+        $path = SITE_BACKEND_URL . substr(str_replace(str_replace('\\', '/', ABSPATH), '', $path), 1);
+        return $path;
+    }
 }

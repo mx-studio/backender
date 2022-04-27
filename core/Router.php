@@ -83,6 +83,8 @@ class Router {
                         foreach ($reflectionMethod->getParameters() as $parameter) {
                             if (isset($sourceInput[$parameter->name])) {
                                 $arguments[] = $sourceInput[$parameter->name];
+                            } elseif ($parameter->isDefaultValueAvailable()) {
+                                $arguments[] = $parameter->getDefaultValue();
                             } else {
                                 break;
                             }

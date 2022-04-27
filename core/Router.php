@@ -90,7 +90,7 @@ class Router {
                             }
                         }
                         if ($reflectionMethod->getNumberOfRequiredParameters() > count($arguments)) {
-                            throw new Exception('Missing required parameters');
+                            throw new \Exception('Missing required parameters');
                         }
                         $this->controller = $classObject;
                         $this->controllerMethod = $methodName;

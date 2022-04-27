@@ -49,7 +49,7 @@ class Mail {
             $mail->AltBody = stripslashes($message);
 
             return $mail->send();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return false;
             // echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }

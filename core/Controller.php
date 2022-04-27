@@ -34,7 +34,7 @@ class Controller {
             extract($data);
             include $filename;
         } else {
-            throw new Exception("Не найден шаблон $name");
+            throw new \Exception("Не найден шаблон $name");
         }
     }
 

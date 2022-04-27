@@ -51,6 +51,16 @@ class Controller {
         self::outputResponse(new Response(false, $errorMessage));
     }
 
+    protected function simulateAccess($userId, $roles = ['user'], $expire = null) {
+        $payload = [
+            'user_id' => $userId,
+            'roles' => $roles,
+            'exp' => $expire === null ? time() + JWT_TOKEN_EXPIRE : $expire,
+        ];
+        $token = \Firebase\JWT\JWT::encode($payload, JWT_SECRET_KEY, 'HS256');
+        $_SERVER['HTTP_AUTHORIZATION'] = "Bearer $token";
+    }
+
     protected function restrictAccess($roles = []) {
         if (PHP_SAPI === 'cli') {
             $this->authorizedData = (object) CLI_ACCESS;

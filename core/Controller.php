@@ -5,7 +5,7 @@ class Controller {
     private $authorizedData = [];
 
     function simulateAccess($userId, $roles = ['user'], $expire = null) {
-        if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
+        if (!isset($_SERVER['HTTP_AUTHORIZATION']) || $_SERVER['HTTP_AUTHORIZATION'] === '') {
             $payload = [
                 'user_id' => $userId,
                 'roles' => $roles,

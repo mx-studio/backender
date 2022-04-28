@@ -99,6 +99,9 @@ class Router {
                             die();
                         }
                         ob_start();
+                        if (defined('SIMULATE_ACCESS_USER_ID') && SIMULATE_ACCESS_USER_ID !== -1 && SIMULATE_ACCESS_USER_ID !== false) {
+                            $this->controller->simulateAccess(SIMULATE_ACCESS_USER_ID);
+                        }
                         $this->controller->{$this->controllerMethod}(...$this->controllerMethodArguments);
                         $this->content = ob_get_contents();
                         ob_end_clean();

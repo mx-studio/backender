@@ -32,3 +32,5 @@ define('NEED_ACTIVATION', true);
 define('ACCOUNT_ACTIVATION_LINK_LIFETIME', 24 * 3600);
 
 define('LANGUAGE', 'russian');
+
+define('SIMULATE_ACCESS_USER_ID', -1);

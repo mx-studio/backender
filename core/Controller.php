@@ -4,6 +4,19 @@ namespace adjai\backender\core;
 class Controller {
     private $authorizedData = [];
 
+    function simulateAccess($userId, $roles = ['user'], $expire = null) {
+        if (!isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $payload = [
+                'user_id' => $userId,
+                'roles' => $roles,
+                'exp' => $expire === null ? time() + JWT_TOKEN_EXPIRE : $expire,
+            ];
+            $token = \Firebase\JWT\JWT::encode($payload, JWT_SECRET_KEY, 'HS256');
+            $_SERVER['HTTP_AUTHORIZATION'] = "Bearer $token";
+        }
+    }
+
+
     protected function getAuthorizedData($name = null, $default = null) {
         if ($name === null) {
             return $this->authorizedData;
@@ -49,16 +62,6 @@ class Controller {
 
     protected function outputError($errorMessage) {
         self::outputResponse(new Response(false, $errorMessage));
-    }
-
-    protected function simulateAccess($userId, $roles = ['user'], $expire = null) {
-        $payload = [
-            'user_id' => $userId,
-            'roles' => $roles,
-            'exp' => $expire === null ? time() + JWT_TOKEN_EXPIRE : $expire,
-        ];
-        $token = \Firebase\JWT\JWT::encode($payload, JWT_SECRET_KEY, 'HS256');
-        $_SERVER['HTTP_AUTHORIZATION'] = "Bearer $token";
     }
 
     protected function restrictAccess($roles = []) {

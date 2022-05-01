@@ -7,7 +7,7 @@ define('DB_NAME', '');
 define('DB_USER', '');
 define('DB_PASSWORD', '');
 define('DB_PREFIX', '');
-define('DB_CHARSET', 'UTF8');
+define('DB_CHARSET', 'UTF8mb4');
 define('TIMEZONE_OFFSET', '+07:00');
 define('TIMEZONE_LOCATION', 'Asia/Novokuznetsk');
 

@@ -56,7 +56,8 @@ ALTER TABLE `user`
 --
 ALTER TABLE `user_meta`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `user_meta_id_uindex` (`id`);
+  ADD UNIQUE KEY `user_meta_id_uindex` (`id`),
+  ADD UNIQUE KEY `unique_meta` (`user_id`,`name`);
 
 --
 -- AUTO_INCREMENT для сохранённых таблиц

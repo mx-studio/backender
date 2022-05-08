@@ -23,7 +23,7 @@ class Core {
     }
 
     private function init() {
-        if (defined('DB_HOST') && defined('DB_USER') && defined('DB_PASSWORD') && defined('DB_NAME') && defined('DB_CHARSET')) {
+        if (defined('DB_HOST') && DB_HOST !== '' && defined('DB_USER') && defined('DB_PASSWORD') && defined('DB_NAME') && DB_NAME !== '' && defined('DB_CHARSET')) {
             $this->initDB();
         }
     }

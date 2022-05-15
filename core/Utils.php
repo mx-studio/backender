@@ -40,26 +40,28 @@ class Utils {
         return array_keys($ar) === range(0, count($ar) - 1);
     }
 
-    function unsetArrayElementByPath(&$ar, $pathA) {
+    static function unsetArrayElementByPath(&$ar, $pathA) {
         if (!is_array($pathA)) {
             $pathA = explode('/', $pathA);
         }
         $pathA = array_filter($pathA);
         $last = array_pop($pathA);
-        $elementParent = &$this->getArrayElementRefByPath($ar, $pathA);
+        $elementParent = self::getArrayElementRefByPath($ar, $pathA);
         unset($elementParent[$last]);
     }
 
-    function &getArrayElementParentRefByPath(&$ar, $pathA) {
+    static function &getArrayElementParentRefByPath(&$ar, $pathA) {
         if (!is_array($pathA)) {
             $pathA = explode('/', $pathA);
         }
         $pathA = array_filter($pathA);
-        array_pop($pathA);
-        return $this->getArrayElementRefByPath($ar, $pathA);
+        $element = array_pop($pathA);
+        $parentElement = self::getArrayElementRefByPath($ar, $pathA);
+        $null = null;
+        return $parentElement !== null && isset($parentElement[$element]) ? $parentElement : $null;
     }
 
-    function &getArrayElementRefByPath(&$ar, $pathA) {
+    static function &getArrayElementRefByPath(&$ar, $pathA) {
         if (!is_array($pathA)) {
             $pathA = explode('/', $pathA);
         }

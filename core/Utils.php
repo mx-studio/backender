@@ -40,6 +40,41 @@ class Utils {
         return array_keys($ar) === range(0, count($ar) - 1);
     }
 
+    function unsetArrayElementByPath(&$ar, $pathA) {
+        if (!is_array($pathA)) {
+            $pathA = explode('/', $pathA);
+        }
+        $pathA = array_filter($pathA);
+        $last = array_pop($pathA);
+        $elementParent = &$this->getArrayElementRefByPath($ar, $pathA);
+        unset($elementParent[$last]);
+    }
+
+    function &getArrayElementParentRefByPath(&$ar, $pathA) {
+        if (!is_array($pathA)) {
+            $pathA = explode('/', $pathA);
+        }
+        $pathA = array_filter($pathA);
+        array_pop($pathA);
+        return $this->getArrayElementRefByPath($ar, $pathA);
+    }
+
+    function &getArrayElementRefByPath(&$ar, $pathA) {
+        if (!is_array($pathA)) {
+            $pathA = explode('/', $pathA);
+        }
+        $pathA = array_filter($pathA);
+        $current = &$ar;
+        foreach ($pathA as $pathItem) {
+            if (!isset($current[$pathItem])) {
+                $null = null;
+                return $null;
+            }
+            $current = &$current[$pathItem];
+        }
+        return $current;
+    }
+
     /**
      * Преобразует путь файловой системы в url
      * @param $path

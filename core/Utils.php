@@ -96,4 +96,56 @@ class Utils {
     public static function nowSQL() {
         return Core::$db->now();
     }
+
+    public static function printObjectSmart($obj) {
+        function printObjectSmartHierarchy($obj, $level = 0, $path = '') {
+            if (is_object($obj) || is_array($obj)) {
+                foreach ($obj as $key => $item) {
+                    echo "<div data-level='$level' style='margin-left: " . ($level * 10) . "px;'>";
+                    if (is_object($item) || is_array($item)) {
+                        echo "<div class='group-caption collapsed' title='$path'>$key</div>";
+                        echo "<div>";
+                        printObjectSmartHierarchy($item, $level + 1, $path . $key . '/');
+                        echo "</div>";
+                    } else {
+                        echo "<div title='$path'>$key: $item</div>";
+                    }
+                    echo "</div>";
+                }
+            }
+        }
+        echo "<div class='smart-tree'>";
+        printObjectSmartHierarchy($obj);
+        echo "</div>";
+        ?>
+        <style>
+            .smart-tree .group-caption {
+                cursor: pointer;
+                color: #55f;
+                font-weight: bold;
+            }
+            .smart-tree .group-caption.collapsed:before {
+                content: "-";
+                margin-right: 4px;
+            }
+            .smart-tree .group-caption:not(.collapsed):before {
+                content: "+";
+                margin-right: 4px;
+            }
+        </style>
+        <script>
+            for (element of document.getElementsByClassName('group-caption')) {
+                element.addEventListener('click', e => {
+                    if (e.target.nextElementSibling.style.display !== 'none') {
+                        e.target.nextElementSibling.style.display = 'none'
+                        e.target.classList.remove('collapsed')
+                    } else {
+                        e.target.nextElementSibling.style.display = 'block'
+                        e.target.classList.add('collapsed')
+                    }
+                })
+            }
+        </script>
+        <?php
+    }
 }

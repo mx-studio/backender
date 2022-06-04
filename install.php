@@ -27,7 +27,7 @@ function fillFiles($filename, $replacements) {
 }
 
 $rootDirectory = getInput('Define app root directory', dirname(dirname(dirname(__DIR__))));
-$webappDirectorySuggest = preg_match('|/backend$|', $rootDirectory) ? '/backend/' : '/';
+$webappDirectorySuggest = preg_match('/(\\\\|\/)backend$/', $rootDirectory) ? '/backend/' : '/';
 $webappDirectory = getInput('Define web app base directory (trailing slash included)', $webappDirectorySuggest);
 
 $appMode = getInput('Define app mode ("development" or "production")', 'development');

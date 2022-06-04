@@ -27,13 +27,27 @@ function fillFiles($filename, $replacements) {
 }
 
 $rootDirectory = getInput('Define app root directory', dirname(dirname(dirname(__DIR__))));
-$webappDirectory = getInput('Define web app base directory (trailing slash included)', '/');
+$webappDirectorySuggest = preg_match('|/backend$|', $rootDirectory) ? '/backend/' : '/';
+$webappDirectory = getInput('Define web app base directory (trailing slash included)', $webappDirectorySuggest);
 
 $appMode = getInput('Define app mode ("development" or "production")', 'development');
-$dbHost = getInput('Define DB host', 'localhost');
-$dbUser = getInput('Define DB user', 'root');
-$dbName = getInput('Define DB name', 'app' . uniqid());
-$dbPassword = getInput('Define DB password', 'root', false);
+$ifUseDb = in_array(getInput('Do you want to use DB ("yes" or "no")?', 'yes'), ['yes', 'y']);
+if ($ifUseDb) {
+    if (preg_match('/(?:\\\\|\/)local\.(?<name>[^\\\\\/]+)\.com(?:$|\\\\|\/)/', $rootDirectory, $matches)) {
+        $dbNameSuggest = $matches['name'];
+    } else {
+        $dbNameSuggest = 'app' . uniqid();
+    }
+    $dbHost = getInput('Define DB host', 'localhost');
+    $dbUser = getInput('Define DB user', 'root');
+    $dbName = getInput('Define DB name', $dbNameSuggest);
+    $dbPassword = getInput('Define DB password', 'root', false);
+} else {
+    $dbHost = "";
+    $dbUser = "";
+    $dbName = "";
+    $dbPassword = "";
+}
 
 //echo "Defined: $definedRootDirectory";
 
@@ -99,27 +113,29 @@ foreach (glob(__DIR__ . '/languages/*') as $file) {
     copy($file, ABSPATH . '/languages/' . basename($file));
 }
 
-$db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, null, null, DB_CHARSET);
-$db->rawQuery("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
-$db->disconnect();
-$db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, null, DB_CHARSET);
+if ($ifUseDb) {
+    $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, null, null, DB_CHARSET);
+    $db->rawQuery("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+    $db->disconnect();
+    $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, null, DB_CHARSET);
 
-$sqlFiles = [__DIR__ . '/schemes/user.sql'];
-foreach ($sqlFiles as $sqlFile) {
-    echo "\trun $sqlFile\n";
-    $commands = file($sqlFile);
-    $commands = array_filter($commands, function($line) {
-        $line = trim($line);
-        return $line && strlen($line) >= 2 && substr($line, 0, 2) !== '--';
-    });
-    $commands = array_map(function($line) {
-        return trim($line);
-    }, $commands);
-    $commands = explode(';', implode(' ', $commands));
-    $commands = array_filter($commands);
+    $sqlFiles = [__DIR__ . '/schemes/user.sql'];
+    foreach ($sqlFiles as $sqlFile) {
+        echo "\trun $sqlFile\n";
+        $commands = file($sqlFile);
+        $commands = array_filter($commands, function($line) {
+            $line = trim($line);
+            return $line && strlen($line) >= 2 && substr($line, 0, 2) !== '--';
+        });
+        $commands = array_map(function($line) {
+            return trim($line);
+        }, $commands);
+        $commands = explode(';', implode(' ', $commands));
+        $commands = array_filter($commands);
 
-    foreach ($commands as $command) {
-        $db->query($command);
+        foreach ($commands as $command) {
+            $db->query($command);
+        }
     }
 }
 

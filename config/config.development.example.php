@@ -12,7 +12,7 @@ define('TIMEZONE_OFFSET', '+07:00');
 define('TIMEZONE_LOCATION', 'Asia/Novokuznetsk');
 
 define('SEND_MAIL_METHOD', 'MAIL');
-define('MAIL_FROM', '');
+define('MAIL_FROM', 'noreply@test.com');
 define('MAIL_FROM_NAME', '');
 define('SMTP_HOST', 'smtp.mail.ru');
 define('SMTP_PORT', 465);

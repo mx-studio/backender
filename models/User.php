@@ -168,12 +168,7 @@ class User extends \adjai\backender\core\DBModel {
             $accountActivationCode = uniqid('', true);
             UserMeta::update($user['id'], '__account_activation_code', $accountActivationCode);
             UserMeta::update($user['id'], '__account_activation_code_expire', time() + ACCOUNT_ACTIVATION_LINK_LIFETIME);
-            if (in_array('cafe-manager', $user['roles'])) {
-                $user['activationLink'] = SITE_FRONTEND_URL . "auth/activation/$userId/" . $accountActivationCode;
-            } else {
-                $user['activationLink'] = SITE_FRONTEND_URL . "auth/activation/$userId/" . $accountActivationCode;
-            }
-
+            $user['activationLink'] = SITE_FRONTEND_URL . "auth/activation/$userId/" . $accountActivationCode;
             Mail::sendUsingTemplate('user-activation', $user['email'], null, Utils::arrayFlatten($user));
         }
     }

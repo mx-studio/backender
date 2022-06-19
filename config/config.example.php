@@ -8,6 +8,7 @@ require_once ABSPATH . '/config.' . MODE . '.php';
 define('BACKEND_BASE_URL', '/');
 define('TEMPLATE', 'default');
 define('EMAIL_TEMPLATES_DIRECTORY', ABSPATH . '/views/emails/');
+define('EMAIL_SIGNATURE', '<p>--</p><p>С уважением, служба поддержки ...</p>');
 
 // Роли пользователей (ключ - системное имя роли, значение - отображаемое в интерфейсе имя)
 define('USER_ROLES', [

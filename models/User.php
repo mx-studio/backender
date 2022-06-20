@@ -143,7 +143,7 @@ class User extends \adjai\backender\core\DBModel {
         $expire = time() + RESET_PASSWORD_EXPIRE;
         UserMeta::update($id, '__reset_password_code', $code);
         UserMeta::update($id, '__reset_password_expire', $expire);
-        return SITE_FRONTEND_URL . "reset-password/$id/$code";
+        return SITE_FRONTEND_URL . "auth/reset-password/$id/$code";
     }
 
     public static function activate($id, $activationCode = false) {

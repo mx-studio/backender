@@ -1,5 +1,5 @@
 <?php
-define('SITE_FRONTEND_URL', ''); // Со слешем на конце
+define('SITE_FRONTEND_URL', $_SERVER['HTTP_FRONTEND_BASE_URL'] ?? ''); // Со слешем на конце
 define('SITE_BACKEND_URL', ''); // Со слешем на конце (только домен, без подкаталога)
 
 define('DB_HOST', '');

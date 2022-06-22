@@ -40,15 +40,27 @@ class Controller {
         die();
     }
 
-    protected function includeScript($name, $safe = false) {
+    protected function includeScript($name, $section = 'inline', $safe = false) {
         $filename = ABSPATH . "/views/$name.min.js";
         if (!file_exists($filename)) {
             $filename = ABSPATH . "/views/$name.js";
         }
         if (file_exists($filename)) {
-            echo "<script src='" . str_replace(ABSPATH, '', $filename) . "'></script>";
+            Router::getInstance()->addScript(str_replace(ABSPATH, '', $filename), $section);
         } else if (!$safe) {
             throw new \Exception("Не найден js-файл шаблона $name");
+        }
+    }
+
+    protected function includeStyle($name, $section = 'inline', $safe = false) {
+        $filename = ABSPATH . "/views/$name.min.css";
+        if (!file_exists($filename)) {
+            $filename = ABSPATH . "/views/$name.css";
+        }
+        if (file_exists($filename)) {
+            Router::getInstance()->addStyle(str_replace(ABSPATH, '', $filename), $section);
+        } else if (!$safe) {
+            throw new \Exception("Не найден css-файл шаблона $name");
         }
     }
 
@@ -57,7 +69,9 @@ class Controller {
         $filename = ABSPATH . "/views/$name.php";
         if (file_exists($filename)) {
             extract($data);
-            $this->includeScript($name, true);
+            $this->includeScript($name . '-header', 'header', true);
+            $this->includeScript($name . '-footer', 'footer', true);
+            $this->includeScript($name, 'inline', true);
             include $filename;
         } else {
             throw new \Exception("Не найден шаблон $name");

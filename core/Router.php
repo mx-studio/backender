@@ -10,6 +10,16 @@ class Router {
     private $isPartialOutput;
     private $path = false;
     private $inputData = [];
+    private $scripts = [
+        'header' => [],
+        'inline' => [],
+        'footer' => [],
+    ];
+    private $styles = [
+        'header' => [],
+        'inline' => [],
+        'footer' => [],
+    ];
 
     public function __construct() {
         $this->init();
@@ -24,6 +34,30 @@ class Router {
             self::$instance = new Router();
         }
         return self::$instance;
+    }
+
+    public function addScript($path, $section = 'inline') {
+        $this->scripts[$section][] = $path;
+    }
+
+    public function outputScripts($section) {
+        if (isset($this->scripts[$section])) {
+            foreach ($this->scripts[$section] as $script) {
+                echo '<script src="' . $script . '"></script>';
+            }
+        }
+    }
+
+    public function addStyle($path, $section = 'inline') {
+        $this->styles[$section][] = $path;
+    }
+
+    public function outputStyles($section) {
+        if (isset($this->styles[$section])) {
+            foreach ($this->styles[$section] as $style) {
+                echo '<link rel="stylesheet" href="' . $style . '">';
+            }
+        }
     }
 
     public function setPath(string $path) {
@@ -124,6 +158,8 @@ class Router {
     }
 
     public function outputContent() {
+        $this->outputStyles('inline');
+        $this->outputScripts('inline');
         echo $this->content;
         /*if (!is_null($this->controller) && !is_null($this->controllerMethod)) {
             $this->controller->{$this->controllerMethod}(...$this->controllerMethodArguments);

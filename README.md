@@ -33,3 +33,10 @@ class TestController extends \adjai\backender\core\Controller {
 
 }
 ```
+
+## USING CLI
+
+If your backend is located in "backend" directory and you want to execute the "CONTROLLER"'s "METHOD" run it the following way:
+```
+php PATH_TO_INDEX/index.php /backend/CONTROLLER/METHOD/
+```

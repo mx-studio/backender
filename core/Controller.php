@@ -41,9 +41,9 @@ class Controller {
     }
 
     protected function includeScript($name, $safe = false) {
-        $filename = ABSPATH . "/views$name.min.js";
+        $filename = ABSPATH . "/views/$name.min.js";
         if (!file_exists($filename)) {
-            $filename = ABSPATH . "/views$name.js";
+            $filename = ABSPATH . "/views/$name.js";
         }
         if (file_exists($filename)) {
             echo "<script src='" . str_replace(ABSPATH, '', $filename) . "'></script>";
@@ -54,7 +54,7 @@ class Controller {
 
     protected function render($name, $data = [], $isPartial = false) {
         Router::getInstance()->setIsPartialOutput($isPartial);
-        $filename = ABSPATH . "/views$name.php";
+        $filename = ABSPATH . "/views/$name.php";
         if (file_exists($filename)) {
             extract($data);
             $this->includeScript($name, true);

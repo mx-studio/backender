@@ -1,0 +1,9 @@
+{
+  "compileOnSave": true,
+  "compilerOptions": {
+    "target": "ES6",
+    "removeComments": true,
+    "sourceMap": true
+  },
+  "exclude": ["node_modules"]
+}

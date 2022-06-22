@@ -51,7 +51,7 @@ if ($ifUseDb) {
 
 //echo "Defined: $definedRootDirectory";
 
-$rootFiles = ['index.php.example', '.htaccess.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
+$rootFiles = ['index.php.example', '.htaccess.example', '.tsconfig.json.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
 //$rootFiles = ['config/config.example.php'];
 
 foreach ($rootFiles as $rootFile) {

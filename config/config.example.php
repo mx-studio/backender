@@ -23,7 +23,6 @@ define('REGISTER_ALLOWED_ROLES', [
 
 define('FILES_UPLOAD_PATH', ABSPATH . '/upload/');
 
-define('LOG_REQUESTS', true);
 define('LOG_DIRECTORY', ABSPATH . '/logs/');
 define('TMP_DIRECTORY', ABSPATH . '/tmp/');
 

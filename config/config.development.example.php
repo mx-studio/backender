@@ -2,6 +2,8 @@
 define('SITE_FRONTEND_URL', $_SERVER['HTTP_FRONTEND_BASE_URL'] ?? ''); // Со слешем на конце
 define('SITE_BACKEND_URL', ''); // Со слешем на конце (только домен, без подкаталога)
 
+define('LOG_REQUESTS', true);
+
 define('DB_HOST', '');
 define('DB_NAME', '');
 define('DB_USER', '');

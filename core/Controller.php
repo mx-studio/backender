@@ -69,6 +69,9 @@ class Controller {
         $filename = ABSPATH . "/views/$name.php";
         if (file_exists($filename)) {
             extract($data);
+            $this->includeStyle($name . '-header', 'header', true);
+            $this->includeStyle($name . '-footer', 'footer', true);
+            $this->includeStyle($name, 'inline', true);
             $this->includeScript($name . '-header', 'header', true);
             $this->includeScript($name . '-footer', 'footer', true);
             $this->includeScript($name, 'inline', true);

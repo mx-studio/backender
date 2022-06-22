@@ -1,6 +1,6 @@
 <?php
 define('SITE_FRONTEND_URL', $_SERVER['HTTP_FRONTEND_BASE_URL'] ?? ''); // Со слешем на конце
-define('SITE_BACKEND_URL', ''); // Со слешем на конце (только домен, без подкаталога)
+define('SITE_BACKEND_URL', ''); // Со слешем на конце (домен + подкаталог, если есть)
 
 define('LOG_REQUESTS', true);
 

@@ -43,7 +43,7 @@ class Router {
     public function outputScripts($section) {
         if (isset($this->scripts[$section])) {
             foreach ($this->scripts[$section] as $script) {
-                echo '<script src="' . $script . '?v=' . filemtime(ABSPATH . $script) . '"></script>';
+                echo '<script src="' . SITE_BACKEND_URL . $script . '?v=' . filemtime(ABSPATH . $script) . '"></script>';
             }
         }
     }
@@ -55,7 +55,7 @@ class Router {
     public function outputStyles($section) {
         if (isset($this->styles[$section])) {
             foreach ($this->styles[$section] as $style) {
-                echo '<link rel="stylesheet" href="' . $style . '?v=' . filemtime(ABSPATH . $style) . '">';
+                echo '<link rel="stylesheet" href="' . SITE_BACKEND_URL . $style . '?v=' . filemtime(ABSPATH . $style) . '">';
             }
         }
     }

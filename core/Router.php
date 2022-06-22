@@ -105,7 +105,6 @@ class Router {
                         $this->controller->{$this->controllerMethod}(...$this->controllerMethodArguments);
                         $this->content = ob_get_contents();
                         ob_end_clean();
-
                         if ($this->getIsPartialOutput()) {
                             $this->outputContent();
                         } else {

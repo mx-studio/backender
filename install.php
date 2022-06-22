@@ -94,6 +94,7 @@ $createDirectories = [
     ABSPATH . "/controllers/",
     ABSPATH . "/models/",
     ABSPATH . "/views/",
+    ABSPATH . "/templates/",
     LOG_DIRECTORY,
     TMP_DIRECTORY,
     FILES_UPLOAD_PATH,
@@ -107,6 +108,10 @@ foreach ($createDirectories as $directory) {
 
 foreach (glob(__DIR__ . '/views/emails/*.html') as $emailTemplate) {
     copy($emailTemplate, EMAIL_TEMPLATES_DIRECTORY . '/' . basename($emailTemplate));
+}
+
+foreach (glob(__DIR__ . '/templates/*.*') as $template) {
+    copy($template, EMAIL_TEMPLATES_DIRECTORY . '/' . basename($template));
 }
 
 foreach (glob(__DIR__ . '/languages/*') as $file) {

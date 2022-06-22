@@ -23,6 +23,7 @@ class Core {
     }
 
     private function init() {
+        date_default_timezone_set(TIMEZONE_LOCATION);
         if (defined('DB_HOST') && DB_HOST !== '' && defined('DB_USER') && defined('DB_PASSWORD') && defined('DB_NAME') && DB_NAME !== '' && defined('DB_CHARSET')) {
             $this->initDB();
         }
@@ -61,7 +62,6 @@ class Core {
         self::$db->setPrefix(DB_PREFIX);
         self::$db->query('SET NAMES ' . DB_CHARSET);
         self::$db->query("SET time_zone='".TIMEZONE_OFFSET."'");
-        date_default_timezone_set(TIMEZONE_LOCATION);
     }
 
     /**

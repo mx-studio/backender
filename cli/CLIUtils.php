@@ -28,7 +28,24 @@ class CLIUtils {
         return $randomString;
     }
 
-    public static function postInstall() {
-        file_put_contents('test.log', 'test');
+    public static function postInstallCmd() {
+        file_put_contents('backender.log', date('d.m.y H:i:s') . " post-install-cmd\n", FILE_APPEND);
     }
+
+    public static function postUpdateCmd() {
+        file_put_contents('backender.log', date('d.m.y H:i:s') . " post-update-cmd\n", FILE_APPEND);
+    }
+
+    public static function postRootPackageInstall() {
+        file_put_contents('backender.log', date('d.m.y H:i:s') . " post-root-package-install\n", FILE_APPEND);
+    }
+
+    public static function postPackageInstall() {
+        file_put_contents('backender.log', date('d.m.y H:i:s') . " post-package-install\n", FILE_APPEND);
+    }
+
+    public static function postPackageUpdate() {
+        file_put_contents('backender.log', date('d.m.y H:i:s') . " post-package-update\n", FILE_APPEND);
+    }
+
 }

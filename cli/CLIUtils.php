@@ -29,7 +29,7 @@ class CLIUtils {
     }
 
     public static function postInstallCmd($event) {
-        file_put_contents('backender.log', $event->getComposer()->getConfig('vendor-dir'), FILE_APPEND);
+        file_put_contents('backender.log', $event->getComposer()->getConfig()->get('vendor-dir'), FILE_APPEND);
         // file_put_contents('backender.log', date('d.m.y H:i:s') . " post-install-cmd\n", FILE_APPEND);
     }
 

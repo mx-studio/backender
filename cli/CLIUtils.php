@@ -48,7 +48,7 @@ class CLIUtils {
                     ]);
                 } elseif ($destinationFileName === "config.$appMode.php") {
                     self::fillFiles($rootFileDestination, [
-                        "define('JWT_SECRET_KEY', '');" => "define('JWT_SECRET_KEY', '" . randomString(24) . "');",
+                        "define('JWT_SECRET_KEY', '');" => "define('JWT_SECRET_KEY', '" . self::randomString(24) . "');",
                     ]);
                 } elseif ($destinationFileName === ".htaccess") {
                     self::fillFiles($rootFileDestination, [

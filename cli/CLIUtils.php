@@ -23,7 +23,7 @@ class CLIUtils {
     private static function randomString($length) {
         $randomChars = array_merge(range('a', 'z'), range('A', 'Z'), range('0', '9'));
         $randomString = implode('', array_map(function() use ($randomChars) {
-            return $randomChars[rand(0, count($randomChars))];
+            return $randomChars[rand(0, count($randomChars) - 1)];
         }, range(0, $length - 1)));
         return $randomString;
     }

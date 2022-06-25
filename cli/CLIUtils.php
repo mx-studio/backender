@@ -31,7 +31,7 @@ class CLIUtils {
     public static function postInstallCmd($event) {
         $vendorDirectory = $event->getComposer()->getConfig()->get('vendor-dir');
         //$rootDirectory = dirname($vendorDirectory);
-        $rootDirectory = getInput('Define app root directory', dirname($vendorDirectory));
+        $rootDirectory = self::getInput('Define app root directory', dirname($vendorDirectory));
         $webappDirectory = preg_match('/(\\\\|\/)backend$/', $rootDirectory) ? '/backend/' : '/';
         $appMode = 'development';
 

@@ -12,5 +12,6 @@ echo done2
 git commit -a -m %VER%
 echo done3
 git tag %VER%
-git push --all
+git push
+git push --tags
 echo Version updated to %VER%

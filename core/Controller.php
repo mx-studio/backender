@@ -112,4 +112,11 @@ class Controller {
             }
         }
     }
+
+    protected function getRelatedModel() {
+        $className = get_class($this);
+        preg_match('|\\\([^\\\]+)Controller$|', $className, $matches);
+        $modelName = "app\\models\\" . $matches[1];
+        return $modelName;
+    }
 }

@@ -30,11 +30,11 @@ class CLIUtils {
 
     public static function postInstallCmd($event) {
         $vendorDirectory = $event->getComposer()->getConfig()->get('vendor-dir');
-        $rootDirectory = getInput('Define app root directory', dirname($vendorDirectory));
+        $rootDirectory = dirname($vendorDirectory);
         $webappDirectory = preg_match('/(\\\\|\/)backend$/', $rootDirectory) ? '/backend/' : '/';
         $appMode = 'development';
 
-        $exampleFiles = ['config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
+        $exampleFiles = ['.htaccess.example.php', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
 
         foreach ($exampleFiles as $exampleFile) {
             $destinationFileName = basename(str_replace('.example', '', $exampleFile));

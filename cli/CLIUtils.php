@@ -137,20 +137,28 @@ class CLIUtils {
     }
 
     public static function createControllerScript($event) {
-        $name = self::getInput('Enter the name of the controller');
-        self::createFromPattern($name, 'Controller', "/controllers/_REPLACE_NAME_Controller.php");
+        $name = self::getInput('Enter the name of the controller (or names, separated by comma)');
+        $names = array_map('trim', explode(',', $name));
+        foreach ($names as $name) {
+            self::createFromPattern($name, 'Controller', "/controllers/_REPLACE_NAME_Controller.php");
+        }
     }
 
     public static function createModelScript($event) {
-        $name = self::getInput('Enter the name of the model');
-        $vendorDirectory = $event->getComposer()->getConfig()->get('vendor-dir');
-        self::createFromPattern($name, 'Model', "/models/_REPLACE_NAME_.php");
+        $name = self::getInput('Enter the name of the model (or names, separated by comma)');
+        $names = array_map('trim', explode(',', $name));
+        foreach ($names as $name) {
+            self::createFromPattern($name, 'Model', "/models/_REPLACE_NAME_.php");
+        }
     }
 
     public static function createEntityScript($event) {
-        $name = self::getInput('Enter the name of the entity');
-        self::createFromPattern($name, 'ControllerEntity', '/controllers/_REPLACE_NAME_Controller.php');
-        self::createFromPattern($name, 'ModelEntity', '/models/_REPLACE_NAME_.php');
+        $name = self::getInput('Enter the name of the entity (or names, separated by comma)');
+        $names = array_map('trim', explode(',', $name));
+        foreach ($names as $name) {
+            self::createFromPattern($name, 'ControllerEntity', '/controllers/_REPLACE_NAME_Controller.php');
+            self::createFromPattern($name, 'ModelEntity', '/models/_REPLACE_NAME_.php');
+        }
     }
 
     public static function createFromPattern($name, $patternName, $destinationFile) {

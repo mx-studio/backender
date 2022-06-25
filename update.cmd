@@ -1,4 +1,4 @@
-ECHO OFF
+@ECHO OFF
 for /F "tokens=1,2,3 delims=." %%G IN ('composer config version') do (
     SET VER_MAJ=%%G
     SET VER_MIN=%%H
@@ -6,7 +6,10 @@ for /F "tokens=1,2,3 delims=." %%G IN ('composer config version') do (
 )
 SET /A VER_PATCH=VER_PATCH+1
 SET VER=%VER_MAJ%.%VER_MIN%.%VER_PATCH%
-REM composer config version %VER%
+echo done1
+call composer config version %VER%
+echo done2
 git commit -a -m %VER%
+echo done3
 git tag %VER%
-echo "Version updated to %VER%"
+echo Version updated to %VER%

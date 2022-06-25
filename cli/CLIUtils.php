@@ -30,7 +30,8 @@ class CLIUtils {
 
     public static function postInstallCmd($event) {
         $vendorDirectory = $event->getComposer()->getConfig()->get('vendor-dir');
-        $rootDirectory = dirname($vendorDirectory);
+        //$rootDirectory = dirname($vendorDirectory);
+        $rootDirectory = getInput('Define app root directory', dirname($vendorDirectory));
         $webappDirectory = preg_match('/(\\\\|\/)backend$/', $rootDirectory) ? '/backend/' : '/';
         $appMode = 'development';
 
@@ -80,6 +81,10 @@ class CLIUtils {
 
     public static function postPackageUpdate() {
         // file_put_contents('backender.log', date('d.m.y H:i:s') . " post-package-update\n", FILE_APPEND);
+    }
+
+    public static function enableDB() {
+
     }
 
 }

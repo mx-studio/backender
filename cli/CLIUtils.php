@@ -5,7 +5,7 @@ class CLIUtils {
 
     private static function getInput($promptMessage, $defaultValue = '', $isRequired = true) {
         do {
-            echo "$promptMessage" . ($defaultValue === '' ? '' : " [$defaultValue]") . ":";
+            echo "$promptMessage" . ($defaultValue === '' ? '' : " [$defaultValue]") . ": ";
             $value = trim(fgets(STDIN));
             if ($value === '') {
                 $value = $defaultValue;
@@ -44,11 +44,13 @@ class CLIUtils {
             $dbHost = self::getInput('Define DB host', 'localhost');
             $dbUser = self::getInput('Define DB user', 'root');
             $dbName = self::getInput('Define DB name', $dbNameSuggest);
+            $dbPrefix = self::getInput('Define DB tables prefix', '', false);
             $dbPassword = self::getInput('Define DB password', 'root', false);
         } else {
             $dbHost = "";
             $dbUser = "";
             $dbName = "";
+            $dbPrefix = "";
             $dbPassword = "";
         }
 
@@ -69,6 +71,7 @@ class CLIUtils {
                         "define('JWT_SECRET_KEY', '');" => "define('JWT_SECRET_KEY', '" . self::randomString(24) . "');",
                         "define('DB_HOST', '');" => "define('DB_HOST', '$dbHost');",
                         "define('DB_NAME', '');" => "define('DB_NAME', '$dbName');",
+                        "define('DB_PREFIX', '');" => "define('DB_PREFIX', '$dbPrefix');",
                         "define('DB_USER', '');" => "define('DB_USER', '$dbUser');",
                         "define('DB_PASSWORD', '');" => "define('DB_PASSWORD', '$dbPassword');",
                     ]);

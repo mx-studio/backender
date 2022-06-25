@@ -40,7 +40,7 @@ class CLIUtils {
             $destinationFileName = basename(str_replace('.example', '', $exampleFile));
             $rootFileDestination = $rootDirectory . "/$destinationFileName";
             if (!file_exists($rootFileDestination)) {
-                copy($exampleFile, $rootFileDestination);
+                copy($vendorDirectory . "/adjai/backender/" . $exampleFile, $rootFileDestination);
                 if ($destinationFileName === 'config.php') {
                     fillFiles($rootFileDestination, [
                         "define('BACKEND_BASE_URL', '/');" => "define('BACKEND_BASE_URL', '$webappDirectory');",

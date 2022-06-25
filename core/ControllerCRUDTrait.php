@@ -1,7 +1,8 @@
 <?php
 namespace adjai\backender\core;
 
-trait ControllerTrait {
+trait ControllerCRUDTrait {
+
     public function actionItems() {
         $model = $this->getRelatedModel();
         $this->outputData($model::getItems());
@@ -18,4 +19,5 @@ trait ControllerTrait {
         $model::update($model);
         $this->outputData();
     }
+
 }

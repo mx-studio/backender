@@ -33,7 +33,7 @@ $webappDirectory = getInput('Define web app base directory (trailing slash inclu
 $appMode = getInput('Define app mode ("development" or "production")', 'development');
 $ifUseDb = in_array(getInput('Do you want to use DB ("yes" or "no")?', 'yes'), ['yes', 'y']);
 if ($ifUseDb) {
-    if (preg_match('/(?:\\\\|\/)local\.(?<name>[^\\\\\/]+)\.com(?:$|\\\\|\/)/', $rootDirectory, $matches)) {
+    if (preg_match('/(?:\\\\|\/)local\.(?<name>[^\\\\\/]+)\.(?:com|ru)(?:$|\\\\|\/)/', $rootDirectory, $matches)) {
         $dbNameSuggest = $matches['name'];
     } else {
         $dbNameSuggest = 'app' . uniqid();
@@ -51,7 +51,7 @@ if ($ifUseDb) {
 
 //echo "Defined: $definedRootDirectory";
 
-$rootFiles = ['index.php.example', '.htaccess.example', '.tsconfig.json.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
+$rootFiles = ['index.php.example', '.htaccess.example', 'tsconfig.json.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
 //$rootFiles = ['config/config.example.php'];
 
 foreach ($rootFiles as $rootFile) {

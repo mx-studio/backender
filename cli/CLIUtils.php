@@ -30,10 +30,27 @@ class CLIUtils {
 
     public static function postInstallCmd($event) {
         $vendorDirectory = $event->getComposer()->getConfig()->get('vendor-dir');
-        //$rootDirectory = dirname($vendorDirectory);
-        $rootDirectory = self::getInput('Define app root directory', dirname($vendorDirectory));
-        $webappDirectory = preg_match('/(\\\\|\/)backend$/', $rootDirectory) ? '/backend/' : '/';
-        $appMode = 'development';
+        $rootDirectory = dirname($vendorDirectory);
+        $webappDirectorySuggest = preg_match('/(\\\\|\/)backend$/', $rootDirectory) ? '/backend/' : '/';
+        $webappDirectory = getInput('Define web app base directory (trailing slash included)', $webappDirectorySuggest);
+        $appMode = getInput('Define app mode ("development" or "production")', 'development');
+        $ifUseDb = in_array(getInput('Do you want to use DB ("yes" or "no")?', 'yes'), ['yes', 'y']);
+        if ($ifUseDb) {
+            if (preg_match('/(?:\\\\|\/)local\.(?<name>[^\\\\\/]+)\.(?:com|ru)(?:$|\\\\|\/)/', $rootDirectory, $matches)) {
+                $dbNameSuggest = $matches['name'];
+            } else {
+                $dbNameSuggest = 'app' . uniqid();
+            }
+            $dbHost = getInput('Define DB host', 'localhost');
+            $dbUser = getInput('Define DB user', 'root');
+            $dbName = getInput('Define DB name', $dbNameSuggest);
+            $dbPassword = getInput('Define DB password', 'root', false);
+        } else {
+            $dbHost = "";
+            $dbUser = "";
+            $dbName = "";
+            $dbPassword = "";
+        }
 
         $exampleFiles = ['.htaccess.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
 
@@ -50,6 +67,10 @@ class CLIUtils {
                 } elseif ($destinationFileName === "config.$appMode.php") {
                     self::fillFiles($rootFileDestination, [
                         "define('JWT_SECRET_KEY', '');" => "define('JWT_SECRET_KEY', '" . self::randomString(24) . "');",
+                        "define('DB_HOST', '');" => "define('DB_HOST', '$dbHost');",
+                        "define('DB_NAME', '');" => "define('DB_NAME', '$dbName');",
+                        "define('DB_USER', '');" => "define('DB_USER', '$dbUser');",
+                        "define('DB_PASSWORD', '');" => "define('DB_PASSWORD', '$dbPassword');",
                     ]);
                 } elseif ($destinationFileName === ".htaccess") {
                     self::fillFiles($rootFileDestination, [
@@ -63,6 +84,35 @@ class CLIUtils {
             }
         }
 
+        if ($ifUseDb) {
+            chdir($rootDirectory);
+            include_once $rootDirectory . '/vendor/autoload.php';
+            include_once 'config.php';
+
+            $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, null, null, DB_CHARSET);
+            $db->rawQuery("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+            $db->disconnect();
+            $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, null, DB_CHARSET);
+
+            $sqlFiles = [$vendorDirectory . '/adjai/backender/schemes/user.sql'];
+            foreach ($sqlFiles as $sqlFile) {
+                echo "\trun $sqlFile\n";
+                $commands = file($sqlFile);
+                $commands = array_filter($commands, function($line) {
+                    $line = trim($line);
+                    return $line && strlen($line) >= 2 && substr($line, 0, 2) !== '--';
+                });
+                $commands = array_map(function($line) {
+                    return trim($line);
+                }, $commands);
+                $commands = explode(';', implode(' ', $commands));
+                $commands = array_filter($commands);
+
+                foreach ($commands as $command) {
+                    $db->query($command);
+                }
+            }
+        }
         //file_put_contents('backender.log', $event->getComposer()->getConfig()->get('vendor-dir'), FILE_APPEND);
         // file_put_contents('backender.log', date('d.m.y H:i:s') . " post-install-cmd\n", FILE_APPEND);
     }

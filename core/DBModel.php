@@ -18,7 +18,7 @@ class DBModel {
     protected static function _getTableName() {
         $className = get_called_class();
         $className = preg_replace('|^.+\\\([^\\\]+)$|', '$1', $className);
-        return DB_PREFIX . strtolower(preg_replace('|([A-Z])|', '_$1', lcfirst($className)));
+        return strtolower(preg_replace('|([A-Z])|', '_$1', lcfirst($className)));
     }
 
     protected static function _applyOrderBy($orderBy) {

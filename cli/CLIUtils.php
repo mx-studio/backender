@@ -42,16 +42,16 @@ class CLIUtils {
             if (!file_exists($rootFileDestination)) {
                 copy($vendorDirectory . "/adjai/backender/" . $exampleFile, $rootFileDestination);
                 if ($destinationFileName === 'config.php') {
-                    fillFiles($rootFileDestination, [
+                    self::fillFiles($rootFileDestination, [
                         "define('BACKEND_BASE_URL', '/');" => "define('BACKEND_BASE_URL', '$webappDirectory');",
                         "define('MODE', '');" => "define('MODE', '$appMode');",
                     ]);
                 } elseif ($destinationFileName === "config.$appMode.php") {
-                    fillFiles($rootFileDestination, [
+                    self::fillFiles($rootFileDestination, [
                         "define('JWT_SECRET_KEY', '');" => "define('JWT_SECRET_KEY', '" . randomString(24) . "');",
                     ]);
                 } elseif ($destinationFileName === ".htaccess") {
-                    fillFiles($rootFileDestination, [
+                    self::fillFiles($rootFileDestination, [
                         "RewriteRule . index.php [L]" => "RewriteRule . {$webappDirectory}index.php [L]",
                         "RewriteRule ^index\.php$ - [L]" => "RewriteRule ^{$webappDirectory}index\.php$ - [L]",
                     ]);

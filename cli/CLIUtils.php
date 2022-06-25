@@ -34,7 +34,7 @@ class CLIUtils {
         $webappDirectory = preg_match('/(\\\\|\/)backend$/', $rootDirectory) ? '/backend/' : '/';
         $appMode = 'development';
 
-        $exampleFiles = ['.htaccess.example.php', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
+        $exampleFiles = ['.htaccess.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
 
         foreach ($exampleFiles as $exampleFile) {
             $destinationFileName = basename(str_replace('.example', '', $exampleFile));

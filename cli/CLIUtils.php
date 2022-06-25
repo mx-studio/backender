@@ -32,19 +32,19 @@ class CLIUtils {
         $vendorDirectory = $event->getComposer()->getConfig()->get('vendor-dir');
         $rootDirectory = dirname($vendorDirectory);
         $webappDirectorySuggest = preg_match('/(\\\\|\/)backend$/', $rootDirectory) ? '/backend/' : '/';
-        $webappDirectory = getInput('Define web app base directory (trailing slash included)', $webappDirectorySuggest);
-        $appMode = getInput('Define app mode ("development" or "production")', 'development');
-        $ifUseDb = in_array(getInput('Do you want to use DB ("yes" or "no")?', 'yes'), ['yes', 'y']);
+        $webappDirectory = self::getInput('Define web app base directory (trailing slash included)', $webappDirectorySuggest);
+        $appMode = self::getInput('Define app mode ("development" or "production")', 'development');
+        $ifUseDb = in_array(self::getInput('Do you want to use DB ("yes" or "no")?', 'yes'), ['yes', 'y']);
         if ($ifUseDb) {
             if (preg_match('/(?:\\\\|\/)local\.(?<name>[^\\\\\/]+)\.(?:com|ru)(?:$|\\\\|\/)/', $rootDirectory, $matches)) {
                 $dbNameSuggest = $matches['name'];
             } else {
                 $dbNameSuggest = 'app' . uniqid();
             }
-            $dbHost = getInput('Define DB host', 'localhost');
-            $dbUser = getInput('Define DB user', 'root');
-            $dbName = getInput('Define DB name', $dbNameSuggest);
-            $dbPassword = getInput('Define DB password', 'root', false);
+            $dbHost = self::getInput('Define DB host', 'localhost');
+            $dbUser = self::getInput('Define DB user', 'root');
+            $dbName = self::getInput('Define DB name', $dbNameSuggest);
+            $dbPassword = self::getInput('Define DB password', 'root', false);
         } else {
             $dbHost = "";
             $dbUser = "";

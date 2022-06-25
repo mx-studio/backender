@@ -51,14 +51,13 @@ if ($ifUseDb) {
 
 //echo "Defined: $definedRootDirectory";
 
-$rootFiles = ['index.php.example', '.htaccess.example', 'tsconfig.json.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
-//$rootFiles = ['config/config.example.php'];
+$exampleFiles = ['index.php.example', '.htaccess.example', 'tsconfig.json.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
 
-foreach ($rootFiles as $rootFile) {
-    $destinationFileName = basename(str_replace('.example', '', $rootFile));
+foreach ($exampleFiles as $exampleFile) {
+    $destinationFileName = basename(str_replace('.example', '', $exampleFile));
     $rootFileDestination = $rootDirectory . "/$destinationFileName";
     if (!file_exists($rootFileDestination)) {
-        copy($rootFile, $rootFileDestination);
+        copy($exampleFile, $rootFileDestination);
         if ($destinationFileName === 'config.php') {
             fillFiles($rootFileDestination, [
                 "define('BACKEND_BASE_URL', '/');" => "define('BACKEND_BASE_URL', '$webappDirectory');",

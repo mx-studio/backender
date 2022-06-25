@@ -29,7 +29,40 @@ class CLIUtils {
     }
 
     public static function postInstallCmd($event) {
-        file_put_contents('backender.log', $event->getComposer()->getConfig()->get('vendor-dir'), FILE_APPEND);
+        $vendorDirectory = $event->getComposer()->getConfig()->get('vendor-dir');
+        $rootDirectory = getInput('Define app root directory', dirname($vendorDirectory));
+        $webappDirectory = preg_match('/(\\\\|\/)backend$/', $rootDirectory) ? '/backend/' : '/';
+        $appMode = 'development';
+
+        $exampleFiles = ['config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
+
+        foreach ($exampleFiles as $exampleFile) {
+            $destinationFileName = basename(str_replace('.example', '', $exampleFile));
+            $rootFileDestination = $rootDirectory . "/$destinationFileName";
+            if (!file_exists($rootFileDestination)) {
+                copy($exampleFile, $rootFileDestination);
+                if ($destinationFileName === 'config.php') {
+                    fillFiles($rootFileDestination, [
+                        "define('BACKEND_BASE_URL', '/');" => "define('BACKEND_BASE_URL', '$webappDirectory');",
+                        "define('MODE', '');" => "define('MODE', '$appMode');",
+                    ]);
+                } elseif ($destinationFileName === "config.$appMode.php") {
+                    fillFiles($rootFileDestination, [
+                        "define('JWT_SECRET_KEY', '');" => "define('JWT_SECRET_KEY', '" . randomString(24) . "');",
+                    ]);
+                } elseif ($destinationFileName === ".htaccess") {
+                    fillFiles($rootFileDestination, [
+                        "RewriteRule . index.php [L]" => "RewriteRule . {$webappDirectory}index.php [L]",
+                        "RewriteRule ^index\.php$ - [L]" => "RewriteRule ^{$webappDirectory}index\.php$ - [L]",
+                    ]);
+                }
+                echo "\t$rootFileDestination has been created\n";
+            } else {
+                echo "\tfailed to create $rootFileDestination\n";
+            }
+        }
+
+        //file_put_contents('backender.log', $event->getComposer()->getConfig()->get('vendor-dir'), FILE_APPEND);
         // file_put_contents('backender.log', date('d.m.y H:i:s') . " post-install-cmd\n", FILE_APPEND);
     }
 

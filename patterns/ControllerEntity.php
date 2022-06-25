@@ -6,7 +6,7 @@ use app\models\_REPLACE_NAME_;
 
 class _REPLACE_NAME_Controller extends Controller {
     
-    public function actionGetItems() {
+    public function actionItems() {
         $this->outputData(_REPLACE_NAME_::getItems());
     }
 

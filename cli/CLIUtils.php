@@ -52,20 +52,20 @@ class CLIUtils {
             $dbPassword = "";
         }
 
-        $exampleFiles = ['.htaccess.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
+        $sampleFiles = ['.htaccess.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
 
-        foreach ($exampleFiles as $exampleFile) {
-            $destinationFileName = basename(str_replace('.example', '', $exampleFile));
-            $rootFileDestination = $rootDirectory . "/$destinationFileName";
-            if (!file_exists($rootFileDestination)) {
-                copy($vendorDirectory . "/adjai/backender/" . $exampleFile, $rootFileDestination);
+        foreach ($sampleFiles as $sampleFile) {
+            $destinationFileName = basename(str_replace('.example', '', $sampleFile));
+            $destinationFile = $rootDirectory . "/$destinationFileName";
+            if (!file_exists($destinationFile)) {
+                copy($vendorDirectory . "/adjai/backender/samples/" . $sampleFile, $destinationFile);
                 if ($destinationFileName === 'config.php') {
-                    self::fillFiles($rootFileDestination, [
+                    self::fillFiles($destinationFile, [
                         "define('BACKEND_BASE_URL', '/');" => "define('BACKEND_BASE_URL', '$webappDirectory');",
                         "define('MODE', '');" => "define('MODE', '$appMode');",
                     ]);
                 } elseif ($destinationFileName === "config.$appMode.php") {
-                    self::fillFiles($rootFileDestination, [
+                    self::fillFiles($destinationFile, [
                         "define('JWT_SECRET_KEY', '');" => "define('JWT_SECRET_KEY', '" . self::randomString(24) . "');",
                         "define('DB_HOST', '');" => "define('DB_HOST', '$dbHost');",
                         "define('DB_NAME', '');" => "define('DB_NAME', '$dbName');",
@@ -73,14 +73,14 @@ class CLIUtils {
                         "define('DB_PASSWORD', '');" => "define('DB_PASSWORD', '$dbPassword');",
                     ]);
                 } elseif ($destinationFileName === ".htaccess") {
-                    self::fillFiles($rootFileDestination, [
+                    self::fillFiles($destinationFile, [
                         "RewriteRule . index.php [L]" => "RewriteRule . {$webappDirectory}index.php [L]",
                         "RewriteRule ^index\.php$ - [L]" => "RewriteRule ^{$webappDirectory}index\.php$ - [L]",
                     ]);
                 }
-                echo "\t$rootFileDestination has been created\n";
+                echo "\t$destinationFile has been created\n";
             } else {
-                echo "\tfailed to create $rootFileDestination\n";
+                echo "\tfailed to create $destinationFile (file already exists)\n";
             }
         }
 
@@ -133,8 +133,29 @@ class CLIUtils {
         // file_put_contents('backender.log', date('d.m.y H:i:s') . " post-package-update\n", FILE_APPEND);
     }
 
-    public static function enableDB() {
+    public static function createControllerScript($event) {
+        $name = self::getInput('Enter the name of the controller');
+        self::createFromPattern($name, 'Controller', "/controllers/_REPLACE_NAME_Controller.php");
+    }
 
+    public static function createModelScript($event) {
+        $name = self::getInput('Enter the name of the model');
+        $vendorDirectory = $event->getComposer()->getConfig()->get('vendor-dir');
+        self::createFromPattern($name, 'Model', "/models/_REPLACE_NAME_.php");
+    }
+
+    public static function createEntityScript($event) {
+        $name = self::getInput('Enter the name of the entity');
+        self::createFromPattern($name, 'ControllerEntity', '/controllers/_REPLACE_NAME_Controller.php');
+        self::createFromPattern($name, 'ModelEntity', '/models/_REPLACE_NAME_.php');
+    }
+
+    public static function createFromPattern($name, $patternName, $destinationFile) {
+        $name = ucfirst($name);
+        $rootDirectory = dirname(dirname(dirname(dirname(__DIR__))));
+        $destinationFile = $rootDirectory . str_replace('_REPLACE_NAME_', $name, $destinationFile);
+        copy(dirname(__DIR__) . "/patterns/$patternName.php", $destinationFile);
+        self::fillFiles($destinationFile, ['_REPLACE_NAME_' => $name]);
     }
 
 }

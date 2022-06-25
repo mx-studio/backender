@@ -1,7 +1,7 @@
 {
     "name": "adjai/backender",
     "description": "Simple backend",
-    "version": "0.0.55",
+    "version": "0.0.54",
     "license": "GPL-2.0-or-later",
     "minimum-stability": "stable",
     "authors": [
@@ -25,6 +25,10 @@
         "files": ["backender.php"]
     },
     "scripts": {
-
+        "post-install-cmd": ["mx\\CLIUtils\\CLIUtils::postInstallCmd"],
+        "post-update-cmd": ["mx\\CLIUtils\\CLIUtils::postUpdateCmd"],
+        "post-root-package-install": ["mx\\CLIUtils\\CLIUtils::postRootPackageInstall"],
+        "post-package-install": ["mx\\CLIUtils\\CLIUtils::postPackageInstall"],
+        "post-package-update": ["mx\\CLIUtils\\CLIUtils::postPackageUpdate"]
     }
 }

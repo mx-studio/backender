@@ -3,12 +3,12 @@ namespace adjai\backender\core;
 
 trait ModelCRUDTrait {
 
-    public static function getItems($where = [], $fields = '*', $numRows = null, $orderBy = []) {
-        return self::traitGetItems($where, $fields, $numRows, $orderBy);
+    public static function getItems($where = [], $fields = '*', $numRows = null, $orderBy = [], $groupBy = [], $ifCalcTotalRows = false) {
+        return self::traitGetItems($where, $fields, $numRows, $orderBy, $groupBy, $ifCalcTotalRows);
     }
 
-    protected static function traitGetItems($where = [], $fields = '*', $numRows = null, $orderBy = []) {
-        return self::_get($where, $fields, $numRows, $orderBy);
+    protected static function traitGetItems($where = [], $fields = '*', $numRows = null, $orderBy = [], $groupBy = [], $ifCalcTotalRows = false) {
+        return self::_get($where, $fields, $numRows, $orderBy, $groupBy, $ifCalcTotalRows);
     }
 
     public static function remove($id) {

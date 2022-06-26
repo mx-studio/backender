@@ -3,14 +3,15 @@ namespace adjai\backender\core;
 
 trait ControllerCRUDTrait {
 
-    public function actionItems($where = [], $fields = '*', $count = null, $orderBy = [], $page = 1) {
-        $this->traitActionItems($where, $fields, $count, $orderBy, $page);
+    public function actionItems($where = [], $fields = '*', $count = null, $orderBy = [], $groupBy = [], $ifCalcTotalRows = false, $page = 1) {
+        $this->traitActionItems($where, $fields, $count, $orderBy, $groupBy, $ifCalcTotalRows, $page);
     }
 
-    protected function traitActionItems($where = [], $fields = '*', $count = null, $orderBy = [], $page = 1) {
+    protected function traitActionItems($where = [], $fields = '*', $count = null, $orderBy = [], $groupBy = [], $ifCalcTotalRows = false, $page = 1) {
         $model = $this->getRelatedModel();
         $numRows = $count === null ? null : [($page - 1) * $count, $count];
-        $this->outputData($model::getItems($where, $fields, $numRows, $orderBy));
+        $result = $model::getItems($where, $fields, $numRows, $orderBy, $groupBy, $ifCalcTotalRows);
+        $this->outputData($ifCalcTotalRows ? ['total_count' => $result[1], 'items' => $result[0]] : $result);
     }
 
     public function actionRemove($id) {

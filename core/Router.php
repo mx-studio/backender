@@ -126,6 +126,9 @@ class Router {
                         if ($reflectionMethod->getNumberOfRequiredParameters() > count($arguments)) {
                             throw new \Exception('Missing required parameters');
                         }
+                        $arguments = array_map(function($argument) {
+                            return strtolower($argument) === 'true' ? true : (strtolower($argument) === 'false' ? false : $argument);
+                        }, $arguments);
                         $this->controller = $classObject;
                         $this->controllerMethod = $methodName;
                         $this->controllerMethodArguments = $arguments;

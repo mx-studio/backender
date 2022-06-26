@@ -67,11 +67,15 @@ class DBModel {
         Core::$db->delete(self::_getTableName());
     }
 
-    protected static function _get($where = [], $fields = '*', $numRows = null, $orderBy = [], $groupBy = []) {
+    protected static function _get($where = [], $fields = '*', $numRows = null, $orderBy = [], $groupBy = [], $ifCalcTotalRows = false) {
+        if ($ifCalcTotalRows) {
+            $fields = "SQL_CALC_FOUND_ROWS $fields";
+        }
         self::_applyWhere($where);
         self::_applyOrderBy($orderBy);
         self::_applyGroupBy($groupBy);
-        return Core::$db->get(self::_getTableName(), $numRows, $fields);
+        $items = Core::$db->get(self::_getTableName(), $numRows, $fields);;
+        return $ifCalcTotalRows ? [$items, Core::$db->rawQueryValue('SELECT FOUND_ROWS() LIMIT 1')] : $items;
     }
 
     protected static function _getOne($where = [], $fields = '*', $orderBy = [], $groupBy = []) {

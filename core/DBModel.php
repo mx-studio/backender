@@ -99,4 +99,14 @@ class DBModel {
         }
         return $id;
     }
+
+    protected static function addRelatedModel($items, $relationName, $relatedClassName, $foreignKey, $privateKey = 'id') {
+        $relatedItems = $relatedClassName::getItems();
+        $relatedItems = array_combine(array_column($relatedItems, $privateKey), $relatedItems);
+        $items = array_map(function($item) use ($relatedItems, $relationName, $foreignKey) {
+            $item[$relationName] = $relatedItems[$item[$foreignKey]];
+            return $item;
+        }, $items);
+        return $items;
+    }
 }

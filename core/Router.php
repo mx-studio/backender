@@ -115,7 +115,7 @@ class Router {
                         }
                         $this->inputData = $sourceInput;
                         foreach ($reflectionMethod->getParameters() as $parameter) {
-                            if (isset($sourceInput[$parameter->name])) {
+                            if (array_key_exists($parameter->name, $sourceInput)) {
                                 $arguments[] = $sourceInput[$parameter->name];
                             } elseif ($parameter->isDefaultValueAvailable()) {
                                 $arguments[] = $parameter->getDefaultValue();

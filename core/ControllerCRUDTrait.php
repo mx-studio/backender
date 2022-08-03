@@ -28,9 +28,9 @@ trait ControllerCRUDTrait {
         $this->traitActionUpdate($model);
     }
 
-    protected function traitActionUpdate($model) {
+    protected function traitActionUpdate($modelData) {
         $model = $this->getRelatedModel();
-        $model::update($model);
+        $model::update($modelData);
         $this->outputData();
     }
 

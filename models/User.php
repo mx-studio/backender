@@ -21,6 +21,10 @@ class User extends \adjai\backender\core\DBModel {
         return $ifSecure ? self::prepare($user) : $user;
     }
 
+    public static function getItems() {
+        return self::prepare(self::_get());
+    }
+
     public static function auth($email, $password, $network = null) {
         $where = [
             'email' => $email,

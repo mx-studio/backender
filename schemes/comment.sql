@@ -14,7 +14,7 @@ CREATE TABLE `comment` (
                            `user_id` int NOT NULL,
                            `text` text COLLATE utf8mb4_general_ci NOT NULL,
                            `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-                           `parent_comment_id` int NOT NULL
+                           `parent_comment_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --

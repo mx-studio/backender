@@ -3,6 +3,8 @@ namespace mx\CLIUtils;
 
 class CLIUtils {
 
+    private static $includeSQLFiles = [];
+
     private static function getInput($promptMessage, $defaultValue = '', $isRequired = true) {
         do {
             echo "$promptMessage" . ($defaultValue === '' ? '' : " [$defaultValue]") . ": ";
@@ -54,6 +56,9 @@ class CLIUtils {
             $dbPassword = "";
         }
 
+        $ifUseAuthModule = in_array(self::getInput('Do you want to use Auth Module ("yes" or "no")?', 'yes'), ['yes', 'y']);
+        $ifUseCommentsModule = $ifUseAuthModule && in_array(self::getInput('Do you want to use Comments Module ("yes" or "no")?', 'yes'), ['yes', 'y']);
+
         $sampleFiles = ['.htaccess.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
 
         foreach ($sampleFiles as $sampleFile) {
@@ -92,29 +97,15 @@ class CLIUtils {
             include_once $rootDirectory . '/vendor/autoload.php';
             include_once 'config.php';
 
-            $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, null, null, DB_CHARSET);
-            $db->rawQuery("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
-            $db->disconnect();
-            $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, null, DB_CHARSET);
-
-            $sqlFiles = [$vendorDirectory . '/adjai/backender/schemes/user.sql'];
-            foreach ($sqlFiles as $sqlFile) {
-                echo "\trun $sqlFile\n";
-                $commands = file($sqlFile);
-                $commands = array_filter($commands, function($line) {
-                    $line = trim($line);
-                    return $line && strlen($line) >= 2 && substr($line, 0, 2) !== '--';
-                });
-                $commands = array_map(function($line) {
-                    return trim($line);
-                }, $commands);
-                $commands = explode(';', implode(' ', $commands));
-                $commands = array_filter($commands);
-
-                foreach ($commands as $command) {
-                    $db->query($command);
+            if ($ifUseAuthModule) {
+                self::$includeSQLFiles[] = $vendorDirectory . '/adjai/backender/schemes/user.sql';
+                if ($ifUseCommentsModule) {
+                    self::$includeSQLFiles[] = $vendorDirectory . '/adjai/backender/schemes/comment.sql';
                 }
             }
+
+            self::processSQL();
+
         }
         //file_put_contents('backender.log', $event->getComposer()->getConfig()->get('vendor-dir'), FILE_APPEND);
         // file_put_contents('backender.log', date('d.m.y H:i:s') . " post-install-cmd\n", FILE_APPEND);
@@ -167,6 +158,31 @@ class CLIUtils {
         $destinationFile = $rootDirectory . str_replace('_REPLACE_NAME_', $name, $destinationFile);
         copy(dirname(__DIR__) . "/patterns/$patternName.php", $destinationFile);
         self::fillFiles($destinationFile, ['_REPLACE_NAME_' => $name]);
+    }
+
+    private static function processSQL() {
+        $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, null, null, DB_CHARSET);
+        $db->rawQuery("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+        $db->disconnect();
+        $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, null, DB_CHARSET);
+
+        foreach (self::$includeSQLFiles as $sqlFile) {
+            echo "\trun $sqlFile\n";
+            $commands = file($sqlFile);
+            $commands = array_filter($commands, function($line) {
+                $line = trim($line);
+                return $line && strlen($line) >= 2 && substr($line, 0, 2) !== '--';
+            });
+            $commands = array_map(function($line) {
+                return trim($line);
+            }, $commands);
+            $commands = explode(';', implode(' ', $commands));
+            $commands = array_filter($commands);
+
+            foreach ($commands as $command) {
+                $db->query($command);
+            }
+        }
     }
 
 }

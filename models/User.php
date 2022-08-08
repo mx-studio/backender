@@ -107,7 +107,7 @@ class User extends \adjai\backender\core\DBModel {
             }
             return $id;
         } else {
-            return new Error('Пользователь с данным email уже зарегистрирован в системе');
+            return new Error('REG_EMAIL_EXIST_MESSAGE');
         }
     }
 

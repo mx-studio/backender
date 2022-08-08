@@ -194,7 +194,7 @@ class UserController extends \adjai\backender\core\Controller {
     public function actionRequestResetPassword($email) {
         $user = User::getByEmail($email);
         if (is_null($user)) {
-            $this->outputError('Пользователь с указанным email не зарегистрирован в системе.');
+            $this->outputError('REG_EMAIL_EXIST_MESSAGE');
         } else {
             $resetLink = User::getResetPasswordLink($user['id']);
             Mail::sendUsingTemplate('request-reset-password', $user['email'], null, compact('resetLink'));
@@ -212,18 +212,18 @@ class UserController extends \adjai\backender\core\Controller {
                 User::updatePassword($userId, md5($password));
                 $this->outputData();
             } else {
-                $this->outputError('Просроченный код для изменения пароля.');
+                $this->outputError('RESET_PASSWORD_CODE_EXPIRED_MESSAGE');
             }
         } else {
-            $this->outputError('Неверный код для изменения пароля.');
+            $this->outputError('RESET_PASSWORD_CODE_WRONG');
         }
     }
 
     public function actionActivate($id, $activationCode) {
         if (User::activate($id, $activationCode)) {
-            $this->outputResponse(new Response(true, 'Активация успешно выполнена', User::getAuthById($id)));
+            $this->outputResponse(new Response(true, 'ACTIVATION_PROCESSED_SUCCESSFUL_MESSAGE', User::getAuthById($id)));
         } else {
-            $this->outputError('Неверная ссылка для активации аккаунта, либо срок действия ссылки истек.');
+            $this->outputError('WRONG_RESET_PASSWORD_LINK_MESSAGE');
         }
     }
 
@@ -231,7 +231,7 @@ class UserController extends \adjai\backender\core\Controller {
         if (User::checkResetPasswordCode($id, $code)) {
             $this->outputData();
         } else {
-            $this->outputError('Неверная ссылка для задания нового пароля, либо срок действия ссылки истек.');
+            $this->outputError('WRONG_RESET_PASSWORD_LINK_MESSAGE');
         }
     }
 

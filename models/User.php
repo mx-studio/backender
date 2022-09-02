@@ -35,12 +35,12 @@ class User extends \adjai\backender\core\DBModel {
         }
         $user = self::_getOne($where);
         if (is_null($user) || !is_null($user['deleted_time'])) {
-            return new Error('Пользователь не найден');
+            return new Error('AUTH_NOT_FOUND_MESSAGE');
         } else {
             if (!is_null($user['blocked_time'])) {
-                return new Error('Пользователь заблокирован');
+                return new Error('AUTH_BLOCKED_MESSAGE');
             } elseif (is_null($user['activated_time'])) {
-                return new Error('Аккаунт неактивирован');
+                return new Error("AUTH_NOT_ACTIVATED_MESSAGE");
             }
             return self::getAuthById($user['id']);
         }

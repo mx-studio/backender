@@ -1,7 +1,7 @@
 {
     "name": "adjai/backender",
     "description": "Simple backend",
-    "version": "0.0.89",
+    "version": "0.0.90",
     "license": "GPL-2.0-or-later",
     "minimum-stability": "stable",
     "authors": [
@@ -15,7 +15,8 @@
         "ext-json": "*",
         "phpmailer/phpmailer": "^6.5",
         "firebase/php-jwt": "^5.5",
-        "rmccue/requests": "^2.0.2"
+        "rmccue/requests": "^2.0.2",
+      "ext-mbstring": "*"
     },
     "type": "library",
     "autoload": {

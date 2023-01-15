@@ -1,5 +1,5 @@
 <?php
-namespace app\models;
+namespace adjai\backender\models;
 
 use adjai\backender\core\Core;
 use adjai\backender\core\DBModel;

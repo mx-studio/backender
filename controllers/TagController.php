@@ -1,8 +1,8 @@
 <?php
-namespace app\controllers;
+namespace adjai\backender\controllers;
 
-use app\models\Tag;
-use app\models\TagGroup;
+use adjai\backender\models\Tag;
+use adjai\backender\models\TagGroup;
 
 class TagController extends \adjai\backender\core\Controller {
 

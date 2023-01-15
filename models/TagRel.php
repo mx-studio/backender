@@ -1,5 +1,5 @@
 <?php
-namespace app\models;
+namespace adjai\backender\models;
 
 use adjai\backender\core\DBModel;
 
@@ -14,7 +14,7 @@ class TagRel extends DBModel {
             }, Tag::getAll($userId, $group))
             , 'id', 'name');
 
-        $tagIds = array_map(function($tag) use ($allTags, $userId) {
+        $tagIds = array_map(function($tag) use ($allTags, $userId, $group) {
             return $allTags[mb_strtolower($tag)] ?? Tag::add($userId, $group, $tag);
         }, $tags);
 
@@ -35,6 +35,20 @@ class TagRel extends DBModel {
         $resultItems = [];
         foreach ($items as $item) {
             $resultItems[$item['object_id']][] = $ifOnlyNames ? $tags[$item['tag_id']] : [
+                'id' => $item['tag_id'],
+                'name' => $tags[$item['tag_id']],
+            ];
+        }
+        return $resultItems;
+    }
+
+    public static function getByObject($userId, $objectId, $group, $ifOnlyNames = false) {
+        $items = self::_get(['user_id' => $userId, 'object_id' => $objectId, 'tag_group_id' => TagGroup::get($group)]);
+        $tags = Tag::getAll($userId, $group);
+        $tags = array_column($tags, 'name', 'id');
+        $resultItems = [];
+        foreach ($items as $item) {
+            $resultItems[] = $ifOnlyNames ? $tags[$item['tag_id']] : [
                 'id' => $item['tag_id'],
                 'name' => $tags[$item['tag_id']],
             ];

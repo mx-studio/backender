@@ -36,3 +36,10 @@ define('ACCOUNT_ACTIVATION_LINK_LIFETIME', 24 * 3600);
 define('LANGUAGE', 'russian');
 
 define('SIMULATE_ACCESS_USER_ID', -1);
+
+// SIMULATE_ACCESS - используется для упрощения тестирования без необходимости авторизации
+/*define('SIMULATE_ACCESS', [
+    'user_id' => 1,
+    'roles' => ['superadmin'],
+    'exp' => time() + 3600 * 24 * 1000,
+]);*/

@@ -8,14 +8,14 @@ use adjai\backender\models\TagRel;
 class TagRelController extends Controller {
 
     public function actionUpdate($objectId, $tags, $group = '') {
-        $this->restrictAccess();
+        // $this->restrictAccess();
         $group = $group ? : TagGroup::$defaultGroup;
         TagRel::update($this->getAuthorizesUserId(), $objectId, $tags, $group);
         $this->outputData(compact('objectId', 'tags'));
     }
 
     public function actionGetByUser($group = '') {
-        $this->restrictAccess();
+        // $this->restrictAccess();
         $group = $group ? : TagGroup::$defaultGroup;
         //$items = array_combine(array_column($items, 'subscription_id'), array_column($items, 'tag_id'));
         /*echo "<pre>";var_dump($subscriptionIds);echo "</pre>";
@@ -26,7 +26,7 @@ class TagRelController extends Controller {
     }
 
     public function actionGetByObject($objectId, $group = '') {
-        $this->restrictAccess();
+        // $this->restrictAccess();
         $group = $group ? : TagGroup::$defaultGroup;
         $this->outputData(TagRel::getByObject($this->getAuthorizesUserId(), $objectId, $group, true));
     }

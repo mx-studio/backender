@@ -61,7 +61,7 @@ class CLIUtils {
         $sampleFiles = ['.htaccess.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
 
         foreach ($sampleFiles as $sampleFile) {
-            $exampleFile = "samples/" . $exampleFile;
+            $exampleFile = "samples/" . $sampleFile;
             $destinationFileName = basename(str_replace('.example', '', $sampleFile));
             $destinationFile = $rootDirectory . "/$destinationFileName";
             if (!file_exists($destinationFile)) {

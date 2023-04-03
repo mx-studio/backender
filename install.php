@@ -11,7 +11,7 @@ function randomString($length) {
 
 function getInput($promptMessage, $defaultValue = '', $isRequired = true) {
     do {
-        echo "$promptMessage" . ($defaultValue === '' ? '' : " [$defaultValue]") . ":";
+        echo "$promptMessage" . ($defaultValue === '' ? '' : " [$defaultValue]") . ": ";
         $value = trim(fgets(STDIN));
         if ($value === '') {
             $value = $defaultValue;
@@ -32,16 +32,16 @@ $webappDirectory = getInput('Define web app base directory (trailing slash inclu
 
 $appMode = getInput('Define app mode ("development" or "production")', 'development');
 $ifUseDb = in_array(getInput('Do you want to use DB ("yes" or "no")?', 'yes'), ['yes', 'y']);
+
 if ($ifUseDb) {
-    if (preg_match('/(?:\\\\|\/)local\.(?<name>[^\\\\\/]+)\.(?:com|ru)(?:$|\\\\|\/)/', $rootDirectory, $matches)) {
-        $dbNameSuggest = $matches['name'];
-    } else {
-        $dbNameSuggest = 'app' . uniqid();
+    $dbNameSuggest = basename($rootDirectory);
+    if ($dbNameSuggest === 'backend') {
+        $dbNameSuggest = basename(dirname($rootDirectory));
     }
     $dbHost = getInput('Define DB host', 'localhost');
     $dbUser = getInput('Define DB user', 'root');
     $dbName = getInput('Define DB name', $dbNameSuggest);
-    $dbPassword = getInput('Define DB password', 'root', false);
+    $dbPassword = getInput('Define DB password', '', false);
 } else {
     $dbHost = "";
     $dbUser = "";
@@ -54,6 +54,7 @@ if ($ifUseDb) {
 $exampleFiles = ['index.php.example', '.htaccess.example', 'tsconfig.json.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
 
 foreach ($exampleFiles as $exampleFile) {
+    $exampleFile = "samples/" . $exampleFile;
     $destinationFileName = basename(str_replace('.example', '', $exampleFile));
     $rootFileDestination = $rootDirectory . "/$destinationFileName";
     if (!file_exists($rootFileDestination)) {
@@ -142,4 +143,3 @@ if ($ifUseDb) {
         }
     }
 }
-

@@ -38,16 +38,15 @@ class CLIUtils {
         $appMode = self::getInput('Define app mode ("development" or "production")', 'development');
         $ifUseDb = in_array(self::getInput('Do you want to use DB ("yes" or "no")?', 'yes'), ['yes', 'y']);
         if ($ifUseDb) {
-            if (preg_match('/(?:\\\\|\/)local\.(?<name>[^\\\\\/]+)\.(?:com|ru)(?:$|\\\\|\/)/', $rootDirectory, $matches)) {
-                $dbNameSuggest = $matches['name'];
-            } else {
-                $dbNameSuggest = 'app' . uniqid();
+            $dbNameSuggest = basename($rootDirectory);
+            if ($dbNameSuggest === 'backend') {
+                $dbNameSuggest = basename(dirname($rootDirectory));
             }
             $dbHost = self::getInput('Define DB host', 'localhost');
             $dbUser = self::getInput('Define DB user', 'root');
             $dbName = self::getInput('Define DB name', $dbNameSuggest);
             $dbPrefix = self::getInput('Define DB tables prefix', '', false);
-            $dbPassword = self::getInput('Define DB password', 'root', false);
+            $dbPassword = self::getInput('Define DB password', '', false);
         } else {
             $dbHost = "";
             $dbUser = "";
@@ -62,6 +61,7 @@ class CLIUtils {
         $sampleFiles = ['.htaccess.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
 
         foreach ($sampleFiles as $sampleFile) {
+            $exampleFile = "samples/" . $exampleFile;
             $destinationFileName = basename(str_replace('.example', '', $sampleFile));
             $destinationFile = $rootDirectory . "/$destinationFileName";
             if (!file_exists($destinationFile)) {

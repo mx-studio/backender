@@ -57,6 +57,7 @@ class CLIUtils {
 
         $ifUseAuthModule = in_array(self::getInput('Do you want to use Auth Module ("yes" or "no")?', 'yes'), ['yes', 'y']);
         $ifUseCommentsModule = $ifUseAuthModule && in_array(self::getInput('Do you want to use Comments Module ("yes" or "no")?', 'yes'), ['yes', 'y']);
+        $ifUseTagsModule = in_array(self::getInput('Do you want to use Tags Module ("yes" or "no")?', 'yes'), ['yes', 'y']);
 
         $sampleFiles = ['.htaccess.example', 'config/config.example.php', 'config/config.development.example.php', 'config/config.production.example.php'];
 
@@ -102,6 +103,9 @@ class CLIUtils {
                 if ($ifUseCommentsModule) {
                     self::$includeSQLFiles[] = $vendorDirectory . '/adjai/backender/schemes/comment.sql';
                 }
+            }
+            if ($ifUseTagsModule) {
+                self::$includeSQLFiles[] = $vendorDirectory . '/adjai/backender/schemes/tags.sql';
             }
 
             self::processSQL();

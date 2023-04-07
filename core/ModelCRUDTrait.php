@@ -38,4 +38,12 @@ trait ModelCRUDTrait {
         return $id;
     }
 
+    public static function get($id) {
+        return self::traitGet($id);
+    }
+
+    protected static function traitGet($id) {
+        return self::_getOne(['id' => $id]);
+    }
+
 }

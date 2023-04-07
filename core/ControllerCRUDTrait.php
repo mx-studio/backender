@@ -34,4 +34,14 @@ trait ControllerCRUDTrait {
         $this->outputData();
     }
 
+    public function actionItem($id) {
+        $this->traitActionItem($id);
+    }
+
+    protected function traitActionItem($id) {
+        $model = $this->getRelatedModel();
+        $result = $model::get($id);
+        $this->outputData($result);
+    }
+
 }

@@ -1,6 +1,8 @@
 <?php
 namespace adjai\backender\core;
 
+use adjai\backender\models\Tag;
+
 trait ControllerCRUDTrait {
 
     public function actionItems($where = [], $fields = '*', $count = null, $orderBy = [], $groupBy = [], $ifCalcTotalRows = false, $page = 1) {
@@ -8,6 +10,7 @@ trait ControllerCRUDTrait {
     }
 
     protected function traitActionItems($where = [], $fields = '*', $count = null, $orderBy = [], $groupBy = [], $ifCalcTotalRows = false, $page = 1) {
+        /** @var ModelCRUDTrait $model */
         $model = $this->getRelatedModel();
         $numRows = $count === null ? null : [($page - 1) * $count, $count];
         $result = $model::getItems($where, $fields, $numRows, $orderBy, $groupBy, $ifCalcTotalRows);
@@ -19,6 +22,7 @@ trait ControllerCRUDTrait {
     }
 
     protected function traitActionRemove($id) {
+        /** @var ModelCRUDTrait $model */
         $model = $this->getRelatedModel();
         $model::remove($id);
         $this->outputData();
@@ -29,9 +33,10 @@ trait ControllerCRUDTrait {
     }
 
     protected function traitActionUpdate($modelData) {
+        /** @var ModelCRUDTrait $model */
         $model = $this->getRelatedModel();
-        $model::update($modelData);
-        $this->outputData();
+        $id = $model::update($modelData);
+        $this->actionItem($id);
     }
 
     public function actionItem($id) {
@@ -39,6 +44,7 @@ trait ControllerCRUDTrait {
     }
 
     protected function traitActionItem($id) {
+        /** @var ModelCRUDTrait $model */
         $model = $this->getRelatedModel();
         $result = $model::get($id);
         $this->outputData($result);

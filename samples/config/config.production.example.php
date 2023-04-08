@@ -25,6 +25,7 @@ define('SMTP_VERIFY_HOST', false);
 define('JWT_SECRET_KEY', '');
 define('JWT_REFRESH_TOKEN_EXPIRE', 60 * 60 * 24 * 30);
 define('JWT_TOKEN_EXPIRE', 60 * 5);
+define('JWT_BY_FIREBASE', false);
 
 define('RESET_PASSWORD_EXPIRE', 60 * 60 * 24);
 

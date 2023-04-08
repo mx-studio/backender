@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS `comment`;
 CREATE TABLE `comment` (
                            `id` int NOT NULL,
                            `object_id` int NOT NULL,
-                           `user_id` int NOT NULL,
+                           `user_id` varchar(32) NOT NULL,
                            `text` text COLLATE utf8mb4_general_ci NOT NULL,
                            `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                            `parent_comment_id` int DEFAULT NULL

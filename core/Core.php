@@ -86,15 +86,37 @@ class Core {
         include_once ABSPATH . "/templates/$this->template.php";
     }
 
+    public static function getFirebasePublicKeys() {
+        $file = TMP_DIRECTORY . 'firebase-publick-keys.json';
+        $refreshPeriod = 60 * 60 * 4;
+        if (!file_exists($file) && (time() - filemtime($file) > $refreshPeriod)) {
+            $keysContent = file_get_contents('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com');
+            if ($keysContent) {
+                file_put_contents($file, $keysContent);
+            }
+        }
+        return file_exists($file) ? json_decode(file_get_contents($file), true) : [];
+    }
+
     public static function getAuthorizationData() {
         if (isset($_SERVER['HTTP_AUTHORIZATION']) && preg_match('|^Bearer\s(\S+)$|', $_SERVER['HTTP_AUTHORIZATION'], $matches)) {
             $token = $matches[1];
-            try {
-                return \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key(JWT_SECRET_KEY, 'HS256'));
-            } catch (\Firebase\JWT\ExpiredException $exception) {
-                return new Error('expired_token');
-            } catch (\Exception $e) {
-                return new Error('wrong_token');
+            if (defined('JWT_BY_FIREBASE') && JWT_BY_FIREBASE === true) {
+                try {
+                    return \Firebase\JWT\JWT::decode($token, self::getFirebasePublicKeys(), ['RS256']);
+                } catch (\Firebase\JWT\ExpiredException $exception) {
+                    return new Error('expired_token');
+                } catch (\Exception $e) {
+                    return new Error('wrong_token');
+                }
+            } else {
+                try {
+                    return \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key(JWT_SECRET_KEY, 'HS256'));
+                } catch (\Firebase\JWT\ExpiredException $exception) {
+                    return new Error('expired_token');
+                } catch (\Exception $e) {
+                    return new Error('wrong_token');
+                }
             }
         } else {
             return new Error('anauthorized_access');

@@ -74,6 +74,10 @@ class TagRel extends DBModel {
         Tag::removeUnusedTags($userId);
     }
 
+    public static function removeByTag($userId, $tagId) {
+        self::_remove(['user_id' => $userId, 'tag_id' => $tagId]);
+    }
+
     public static function getByObjectId($objectId, $group) {
         $items = self::_get([
             'object_id' => $objectId,

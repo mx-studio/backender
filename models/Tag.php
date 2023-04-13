@@ -71,4 +71,10 @@ class Tag extends DBModel {
         ], '*', null, ['id' => 'asc']);
     }
 
+    public static function remove($userId, $groupName, $tagName) {
+        $id = self::get($userId, $groupName, $tagName);
+        self::_remove(['id' => $id]);
+        TagRel::removeByTag($userId, $id);
+    }
+
 }

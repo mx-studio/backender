@@ -58,7 +58,7 @@ class Core {
     }
 
     private function initDB() {
-        self::$db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT ?? null, DB_CHARSET);
+        self::$db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, defined('DB_PORT') ? DB_PORT : null, DB_CHARSET);
         self::$db->setPrefix(DB_PREFIX);
         self::$db->query('SET NAMES ' . DB_CHARSET);
         self::$db->query("SET time_zone='".TIMEZONE_OFFSET."'");

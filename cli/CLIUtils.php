@@ -71,7 +71,7 @@ class CLIUtils {
                 copy($vendorDirectory . "/adjai/backender/samples/" . $sampleFile, $destinationFile);
                 if ($destinationFileName === 'config.php') {
                     self::fillFiles($destinationFile, [
-                        "define('SITE_BACKEND_URL', '');" => "define('SITE_BACKEND_URL', '$webappDirectory');",
+                        "define('BACKEND_BASE_URL', '/');" => "define('BACKEND_BASE_URL', '$webappDirectory');",
                         "define('MODE', '');" => "define('MODE', '$appMode');",
                     ]);
                 } elseif ($destinationFileName === "config.$appMode.php") {

@@ -41,6 +41,8 @@ class CLIUtils {
             $dbNameSuggest = basename($rootDirectory);
             if ($dbNameSuggest === 'backend') {
                 $dbNameSuggest = basename(dirname($rootDirectory));
+                $dbNameSuggest = preg_replace('~^local.~', '', $dbNameSuggest);
+                $dbNameSuggest = preg_replace('~\.(com|ru|net|io)$~', '', $dbNameSuggest);
             }
             $dbHost = self::getInput('Define DB host', 'localhost');
             $dbUser = self::getInput('Define DB user', 'root');
@@ -69,7 +71,7 @@ class CLIUtils {
                 copy($vendorDirectory . "/adjai/backender/samples/" . $sampleFile, $destinationFile);
                 if ($destinationFileName === 'config.php') {
                     self::fillFiles($destinationFile, [
-                        "define('BACKEND_BASE_URL', '/');" => "define('BACKEND_BASE_URL', '$webappDirectory');",
+                        "define('BACKEND_BASE_URL', '');" => "define('BACKEND_BASE_URL', '$webappDirectory');",
                         "define('MODE', '');" => "define('MODE', '$appMode');",
                     ]);
                 } elseif ($destinationFileName === "config.$appMode.php") {

@@ -64,6 +64,17 @@ class Controller {
         }
     }
 
+    protected function renderPartial($name, $data = []) {
+        $filename = ABSPATH . "/views/$name.php";
+        if (file_exists($filename)) {
+            extract($data);
+            $this->includeStyle($name, 'footer', true);
+            include $filename;
+        } else {
+            throw new \Exception("Не найден шаблон $name");
+        }
+    }
+
     protected function render($name, $data = [], $isPartial = false) {
         Router::getInstance()->setIsPartialOutput($isPartial);
         $filename = ABSPATH . "/views/$name.php";

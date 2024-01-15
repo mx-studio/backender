@@ -92,8 +92,14 @@ class Router {
                 Log::logRequest();
             }
         }
+        if ($path === BACKEND_BASE_URL) {
+            $path .= DEFAULT_CONTROLLER . '/';
+        }
         if (preg_match('|^' . BACKEND_BASE_URL . '(.+)/|', $path, $matches)) {
             $pathItems = explode('/', $matches[1]);
+            if (count($pathItems) === 1) {
+                $pathItems[] = DEFAULT_CONTROLLER_METHOD;
+            }
             if (count($pathItems) > 1) {
                 $shortClassName = ucfirst(Core::transformHyphensToCamelCase($pathItems[0])) . 'Controller';
                 $className = 'app\\controllers\\'. $shortClassName;

@@ -26,6 +26,9 @@ define('FILES_UPLOAD_PATH', ABSPATH . '/upload/');
 define('LOG_DIRECTORY', ABSPATH . '/logs/');
 define('TMP_DIRECTORY', ABSPATH . '/tmp/');
 
+define('DEFAULT_CONTROLLER', 'default');
+define('DEFAULT_CONTROLLER_METHOD', 'default');
+
 define('CLI_ACCESS', [
     'user_id' => 1,
     'roles' => ['superadmin'],

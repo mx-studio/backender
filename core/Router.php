@@ -101,6 +101,15 @@ class Router {
                 $pathItems[] = DEFAULT_CONTROLLER_METHOD;
             }
             if (count($pathItems) > 1) {
+                $isJSONInput = isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/json';
+                if (!$isJSONInput) {
+                    $sourceInput = $_REQUEST;
+                } else {
+                    $input = file_get_contents('php://input');
+                    $sourceInput = $input ? json_decode($input, true) : [];
+                }
+                $this->inputData = $sourceInput;
+
                 $shortClassName = ucfirst(Core::transformHyphensToCamelCase($pathItems[0])) . 'Controller';
                 $className = 'app\\controllers\\'. $shortClassName;
                 if (!class_exists($className)) {
@@ -112,14 +121,6 @@ class Router {
                     if (method_exists($classObject, $methodName)) {
                         $reflectionMethod = new \ReflectionMethod($className, $methodName);
                         $arguments = [];
-                        $isJSONInput = isset($_SERVER['CONTENT_TYPE']) && $_SERVER['CONTENT_TYPE'] === 'application/json';
-                        if (!$isJSONInput) {
-                            $sourceInput = $_REQUEST;
-                        } else {
-                            $input = file_get_contents('php://input');
-                            $sourceInput = $input ? json_decode($input, true) : [];
-                        }
-                        $this->inputData = $sourceInput;
                         foreach ($reflectionMethod->getParameters() as $parameter) {
                             if (array_key_exists($parameter->name, $sourceInput)) {
                                 $arguments[] = $sourceInput[$parameter->name];

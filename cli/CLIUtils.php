@@ -167,10 +167,10 @@ class CLIUtils {
     }
 
     private static function processSQL() {
-        $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, null, null, DB_CHARSET);
+        $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, null, 3306, DB_CHARSET);
         $db->rawQuery("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
         $db->disconnect();
-        $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, null, DB_CHARSET);
+        $db = new \MysqliDb(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, 3306, DB_CHARSET);
 
         foreach (self::$includeSQLFiles as $sqlFile) {
             echo "\trun $sqlFile\n";

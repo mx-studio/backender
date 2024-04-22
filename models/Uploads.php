@@ -9,7 +9,7 @@ class Uploads extends DBModel {
     public static function uploadFromServer($name) {
         $imagesIdA = [];
         if (count($_FILES) && isset($_FILES[$name])) {
-            $files = array_map(function($index) {
+            $files = array_map(function($index) use ($name) {
                 return [
                     'name' => $_FILES[$name]['name'][$index],
                     'tmp_name' => $_FILES[$name]['tmp_name'][$index],

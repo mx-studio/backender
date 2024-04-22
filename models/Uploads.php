@@ -5,6 +5,27 @@ use adjai\backender\core\DBModel;
 
 class Uploads extends DBModel {
 
+    // Upload all files from $_FILES by name $name
+    public static function uploadFromServer($name) {
+        $imagesIdA = [];
+        if (count($_FILES) && isset($_FILES[$name])) {
+            $files = array_map(function($index) {
+                return [
+                    'name' => $_FILES[$name]['name'][$index],
+                    'tmp_name' => $_FILES[$name]['tmp_name'][$index],
+                    'error' => $_FILES[$name]['error'][$index],
+                ];
+            }, array_keys($_FILES[$name]['error']));
+            $files = array_values(array_filter($files, function($file) {
+                return $file['error'] === 0;
+            }));
+            foreach ($files as $file) {
+                $imagesIdA[] = self::upload($file);
+            }
+        }
+        return $imagesIdA;
+    }
+
     public static function upload($file) {
         $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
         $id = self::_insert(['name' => $file['name'], 'ext' => $ext]);

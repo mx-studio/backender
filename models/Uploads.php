@@ -35,7 +35,7 @@ class Uploads extends DBModel {
 
     public static function getByIdsList($images)
     {
-        $uploadsBaseUrl = SITE_BACKEND_URL . str_replace(ABSPATH . '/', '', UPLOADS_DIRECTORY);
+        $uploadsBaseUrl = BACKEND_BASE_URL . str_replace(ABSPATH . '/', '', UPLOADS_DIRECTORY);
         $idA = explode(',', $images);
         $images = self::_get(['id' => [$idA, 'IN']]);
         $images = array_map(function($item) use ($uploadsBaseUrl) {

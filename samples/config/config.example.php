@@ -25,6 +25,8 @@ define('FILES_UPLOAD_PATH', ABSPATH . '/upload/');
 
 define('LOG_DIRECTORY', ABSPATH . '/logs/');
 define('TMP_DIRECTORY', ABSPATH . '/tmp/');
+define('UPLOADS_DIRECTORY', ABSPATH . '/uploads/');
+define('BACKUPS_DIRECTORY', ABSPATH . '/backups/');
 
 define('DEFAULT_CONTROLLER', 'default');
 define('DEFAULT_CONTROLLER_METHOD', 'default');

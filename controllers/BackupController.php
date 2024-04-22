@@ -8,6 +8,7 @@ class BackupController extends Controller {
 
     public function actionBackup() {
         $result = Backup::save();
+        if (PHP_SAPI === 'cli') {die();}
         $this->outputData($result === null ? [
             'created' => false,
         ] : [
@@ -18,6 +19,7 @@ class BackupController extends Controller {
 
     public function actionRestore($name) {
         Backup::restore($name);
+        if (PHP_SAPI === 'cli') {die();}
         $this->outputData();
     }
 

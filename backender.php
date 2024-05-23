@@ -19,6 +19,7 @@ class Backender {
                 dirname(__DIR__) . '/',
                 ABSPATH .'/controllers/',
                 ABSPATH .'/models/',
+                ABSPATH .'/utils/',
             ];
             $className = str_replace('\\', '/', $className) . '.php';
             if (strpos($className, 'adjai/backender/') === 0) {

@@ -61,6 +61,9 @@ class UserController extends \adjai\backender\core\Controller {
 
     public function actionSocialAuth() {
         $accessCodeInfo = Router::getInstance()->getInputData();
+        if (isset($accessCodeInfo['error'])) {
+            $this->outputError($accessCodeInfo['error']);
+        }
         $requestUserInfoUri = $accessCodeInfo['requestUserInfoUri'];
         $requestUserInfoUri = preg_replace_callback('|(\{([^}]+)\})|', function($matches) use ($accessCodeInfo) {
             return $accessCodeInfo[$matches[2]] ?? $matches[1];

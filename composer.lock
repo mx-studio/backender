@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "066f374e200fa6d7a5840fcb23acdbbf",
+    "content-hash": "8579d899469518eba2ad2252414318fc",
     "packages": [
         {
             "name": "firebase/php-jwt",
@@ -224,16 +224,16 @@
         },
         {
             "name": "thingengineer/mysqli-database-class",
-            "version": "v2.9.3",
+            "version": "v2.9.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ThingEngineer/PHP-MySQLi-Database-Class.git",
-                "reference": "03dbce1c7f1c9def315ad8ef52e1f5c0a806d6ed"
+                "reference": "469666dda734f0608b105944add6d544ae7f48e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ThingEngineer/PHP-MySQLi-Database-Class/zipball/03dbce1c7f1c9def315ad8ef52e1f5c0a806d6ed",
-                "reference": "03dbce1c7f1c9def315ad8ef52e1f5c0a806d6ed",
+                "url": "https://api.github.com/repos/ThingEngineer/PHP-MySQLi-Database-Class/zipball/469666dda734f0608b105944add6d544ae7f48e8",
+                "reference": "469666dda734f0608b105944add6d544ae7f48e8",
                 "shasum": ""
             },
             "require": {
@@ -267,9 +267,9 @@
             "description": "PHP MySQL Wrapper and object mapper which utilizes MySQLi and prepared statements",
             "support": {
                 "issues": "https://github.com/ThingEngineer/PHP-MySQLi-Database-Class/issues",
-                "source": "https://github.com/ThingEngineer/PHP-MySQLi-Database-Class/tree/v2.9.3"
+                "source": "https://github.com/ThingEngineer/PHP-MySQLi-Database-Class/tree/v2.9.4"
             },
-            "time": "2019-08-24T09:28:56+00:00"
+            "time": "2024-05-24T17:16:21+00:00"
         }
     ],
     "packages-dev": [],
@@ -279,8 +279,10 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-zip": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.2.0"
+    "plugin-api-version": "2.6.0"
 }

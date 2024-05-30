@@ -1,7 +1,7 @@
 {
     "name": "adjai/backender",
     "description": "Simple backend",
-    "version": "0.0.124",
+    "version": "0.0.125",
     "license": "GPL-2.0-or-later",
     "minimum-stability": "stable",
     "authors": [
@@ -11,7 +11,7 @@
         }
     ],
     "require": {
-        "thingengineer/mysqli-database-class": "^2.9.3",
+        "thingengineer/mysqli-database-class": "^2.9.4",
         "ext-json": "*",
         "phpmailer/phpmailer": "^6.5",
         "firebase/php-jwt": "^5.5",

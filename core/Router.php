@@ -192,8 +192,8 @@ class Router {
         return $this->isPartialOutput;
     }
 
-    public function getInputData() {
-        return $this->inputData;
+    public function getInputData($name = null, $default = null) {
+        return $name === null ? $this->inputData : ($this->inputData[$name] ?? $default);
     }
 
 }

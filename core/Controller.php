@@ -135,4 +135,9 @@ class Controller {
         $modelName = "app\\models\\" . $matches[1];
         return $modelName;
     }
+
+    protected function getParam($name, $default = null) {
+        return Router::getInstance()->getInputData($name, $default);
+    }
+
 }

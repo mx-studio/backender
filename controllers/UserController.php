@@ -241,7 +241,13 @@ class UserController extends \adjai\backender\core\Controller {
 
     public function actionFeedback() {
         if (defined('ADMIN_EMAIL')) {
-            if (Mail::sendUsingTemplate('feedback', ADMIN_EMAIL)) {
+            $data = [
+                'name' => $this->getParam('name', ''),
+                'email' => $this->getParam('email', ''),
+                'topic' => $this->getParam('topic', ''),
+                'text' => $this->getParam('text', ''),
+            ];
+            if (Mail::sendUsingTemplate('feedback', ADMIN_EMAIL, null, $data)) {
                 $this->outputData();
             } else {
                 $this->outputError('Непредвиденная ошибка отправки сообщения');

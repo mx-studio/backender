@@ -13,6 +13,8 @@ define('DB_CHARSET', 'UTF8mb4');
 define('TIMEZONE_OFFSET', '+07:00');
 define('TIMEZONE_LOCATION', 'Asia/Novokuznetsk');
 
+define('ADMIN_EMAIL', '');
+
 define('SEND_MAIL_METHOD', 'MAIL');
 define('MAIL_FROM', 'noreply@test.com');
 define('MAIL_FROM_NAME', '');

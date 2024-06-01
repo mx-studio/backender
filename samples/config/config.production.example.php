@@ -13,6 +13,8 @@ define('DB_CHARSET', 'UTF8mb4');
 define('TIMEZONE_OFFSET', '+03:00');
 define('TIMEZONE_LOCATION', 'Europe/Moscow');
 
+define('ADMIN_EMAIL', '');
+
 define('SEND_MAIL_METHOD', 'SMTP'); // SMTP or MAIL
 define('MAIL_FROM', '');
 define('MAIL_FROM_NAME', '');

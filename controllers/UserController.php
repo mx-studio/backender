@@ -7,6 +7,7 @@ use adjai\backender\core\Language;
 use adjai\backender\core\Mail;
 use adjai\backender\core\Response;
 use adjai\backender\core\Router;
+use adjai\backender\core\Utils;
 use adjai\backender\models\User;
 use adjai\backender\models\UserMeta;
 use WpOrg\Requests\Requests;
@@ -235,6 +236,18 @@ class UserController extends \adjai\backender\core\Controller {
             $this->outputData();
         } else {
             $this->outputError('WRONG_RESET_PASSWORD_LINK_MESSAGE');
+        }
+    }
+
+    public function actionFeedback() {
+        if (defined('ADMIN_EMAIL')) {
+            if (Mail::sendUsingTemplate('feedback', ADMIN_EMAIL)) {
+                $this->outputData();
+            } else {
+                $this->outputError('Непредвиденная ошибка отправки сообщения');
+            }
+        } else {
+            $this->outputError('Ошибка отправки: email администратора не задан');
         }
     }
 

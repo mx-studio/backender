@@ -36,3 +36,5 @@ define('CLI_ACCESS', [
     'roles' => ['superadmin'],
     'exp' => time() + 3600 * 24 * 1000,
 ]);
+
+//define('BEFORE_ACTION', 'SystemController->processRequest');

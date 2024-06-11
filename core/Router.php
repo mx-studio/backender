@@ -142,6 +142,24 @@ class Router {
                         if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
                             die();
                         }
+                        if (defined('BEFORE_ACTION') && BEFORE_ACTION) {
+                            list($actionClass, $actionMethod) = explode('->', BEFORE_ACTION);
+                            if ($actionClass && $actionMethod) {
+                                $fullActionClass = $actionClass;
+                                if (!class_exists($fullActionClass)) {
+                                    $fullActionClass = 'app\\controllers\\'. $actionClass;
+                                    if (!class_exists($fullActionClass)) {
+                                        $fullActionClass = 'adjai\\backender\\controllers\\'. $actionClass;
+                                    }
+                                }
+                                if (class_exists($fullActionClass)) {
+                                    $actionClassObject = new $fullActionClass();
+                                    if (method_exists($actionClassObject, $actionMethod)) {
+                                        $actionClassObject->$actionMethod();
+                                    }
+                                }
+                            }
+                        }
                         ob_start();
                         if (defined('SIMULATE_ACCESS_USER_ID') && SIMULATE_ACCESS_USER_ID !== -1 && SIMULATE_ACCESS_USER_ID !== false) {
                             $this->controller->simulateAccess(SIMULATE_ACCESS_USER_ID);

@@ -115,7 +115,7 @@ class Controller {
         }
         $authorizedData = Core::getAuthorizationData();
         if ($authorizedData instanceof Error) {
-            if (defined('SIMULATE_ACCESS')) {
+            if (defined('SIMULATE_ACCESS') && $authorizedData->getMessage() === 'anauthorized_access') {
                 $authorizedData = (object) SIMULATE_ACCESS;
             }
         }

@@ -4,17 +4,10 @@ namespace adjai\backender\core;
 class Log {
     static function logRequest() {
         $userInfo = '';
-        if (isset($_SERVER['HTTP_AUTHORIZATION']) && preg_match('|^Bearer\s(\S+)$|', $_SERVER['HTTP_AUTHORIZATION'], $matches)) {
-            $token = $matches[1];
-            try {
-                $authorizedData = \Firebase\JWT\JWT::decode($token, new \Firebase\JWT\Key(JWT_SECRET_KEY, 'HS256'));
-                $user = \adjai\backender\models\User::get($authorizedData->user_id);
-                $userInfo = "{$user['name']} (id: {$user['id']}, email: {$user['email']}, role: {$user['roles'][0]})";
-            } catch (\Firebase\JWT\ExpiredException $exception) {
-
-            } catch (\Exception $e) {
-
-            }
+        $authorizedData = Core::getAuthorizationData();
+        if (!$authorizedData instanceof Error) {
+            $user = \adjai\backender\models\User::get($authorizedData->user_id);
+            $userInfo = "{$user['name']} (id: {$user['id']}, email: {$user['email']}, role: {$user['roles'][0]})";
         }
         $ip = $_SERVER['REMOTE_ADDR'];
         $uri = $_SERVER['REQUEST_URI'];

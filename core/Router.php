@@ -121,9 +121,12 @@ class Router {
                     if (method_exists($classObject, $methodName)) {
                         $reflectionMethod = new \ReflectionMethod($className, $methodName);
                         $arguments = [];
+                        $argumentsFromPath = array_slice($pathItems, 2);
                         foreach ($reflectionMethod->getParameters() as $parameter) {
                             if (array_key_exists($parameter->name, $sourceInput)) {
                                 $arguments[] = $sourceInput[$parameter->name];
+                            } elseif (count($argumentsFromPath)) {
+                                $arguments[] = array_shift($argumentsFromPath);
                             } elseif ($parameter->isDefaultValueAvailable()) {
                                 $arguments[] = $parameter->getDefaultValue();
                             } else {

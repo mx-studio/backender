@@ -2,6 +2,7 @@
 namespace adjai\backender\core;
 
 class DBModel {
+    protected static $tableName;
 
     protected static function _batchPrepare($items, $func) {
         if (is_null($items)) {
@@ -16,6 +17,9 @@ class DBModel {
     }
 
     protected static function _getTableName() {
+        if (isset(static::$tableName)) {
+            return static::$tableName;
+        }
         $className = get_called_class();
         $className = preg_replace('|^.+\\\([^\\\]+)$|', '$1', $className);
         return strtolower(preg_replace('|([A-Z])|', '_$1', lcfirst($className)));

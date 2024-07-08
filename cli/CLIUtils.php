@@ -99,6 +99,9 @@ class CLIUtils {
             chdir($rootDirectory);
             include_once $rootDirectory . '/vendor/autoload.php';
             include_once 'config.php';
+            foreach (glob($vendorDirectory . '/adjai/backender/schemes/_*.sql') as $sqlFile) {
+                self::$includeSQLFiles[] = $sqlFile;
+            }
 
             if ($ifUseAuthModule) {
                 self::$includeSQLFiles[] = $vendorDirectory . '/adjai/backender/schemes/user.sql';

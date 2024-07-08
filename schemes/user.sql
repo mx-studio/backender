@@ -22,7 +22,7 @@ CREATE TABLE `user` (
                         `network_user_id` varchar(30) DEFAULT NULL,
                         `created` datetime NOT NULL,
                         `activated_time` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci
 
 
 -- --------------------------------------------------------
@@ -37,7 +37,7 @@ CREATE TABLE `user_meta` (
   `user_id` int NOT NULL,
   `name` varchar(255) NOT NULL,
   `value` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
 
 --
 -- Индексы сохранённых таблиц

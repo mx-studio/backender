@@ -17,8 +17,8 @@ CREATE TABLE `tag` (
                        `id` int NOT NULL,
                        `user_id` varchar(128) NOT NULL,
                        `tag_group_id` int NOT NULL,
-                       `name` varchar(100) COLLATE utf8mb4_0900_ai_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+                       `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -29,8 +29,8 @@ CREATE TABLE `tag` (
 DROP TABLE IF EXISTS `tag_group`;
 CREATE TABLE `tag_group` (
                              `id` int NOT NULL,
-                             `name` varchar(100) COLLATE utf8mb4_0900_ai_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+                             `name` varchar(100) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -45,7 +45,7 @@ CREATE TABLE `tag_rel` (
                            `tag_id` int NOT NULL,
                            `user_id` varchar(128) NOT NULL,
                            `tag_group_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
 
 --
 -- Индексы сохранённых таблиц

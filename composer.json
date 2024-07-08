@@ -1,7 +1,7 @@
 {
     "name": "adjai/backender",
     "description": "Simple backend",
-    "version": "0.0.134",
+    "version": "0.0.135",
     "license": "GPL-2.0-or-later",
     "minimum-stability": "stable",
     "authors": [

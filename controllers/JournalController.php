@@ -7,7 +7,8 @@ use adjai\backender\models\Journal;
 class JournalController extends Controller {
 
     public function actionSave($juid, $action, $params = null) {
-        Journal::save($juid, $action, $params, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'] ?? '');
+        $ip = isset($_SERVER['HTTP_X_REAL_IP']) ? $_SERVER['HTTP_X_REAL_IP'] : $_SERVER['REMOTE_ADDR'];
+        Journal::save($juid, $action, $params, $ip, $_SERVER['HTTP_USER_AGENT'] ?? '');
         $this->outputData();
     }
 

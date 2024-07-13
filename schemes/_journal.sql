@@ -8,6 +8,7 @@ create table journal
     datetime timestamp   not null DEFAULT CURRENT_TIMESTAMP,
     ip       varchar(15) COLLATE utf8mb4_general_ci not null,
     action  varchar(255)  COLLATE utf8mb4_general_ci       not null,
+    referer  varchar(255)  COLLATE utf8mb4_general_ci       null,
     params   text  COLLATE utf8mb4_general_ci       null,
     useragent  varchar(255)  COLLATE utf8mb4_general_ci       not null,
     constraint journal_pk

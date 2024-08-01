@@ -37,7 +37,7 @@ class CLIUtils {
         include_once $rootDirectory . '/vendor/autoload.php';
         //include_once 'config.php';
 
-        self::$includeSQLFiles[] = $rootDirectory . '/schemes/_journal.sql';
+        self::$includeSQLFiles[] = $rootDirectory . '/schemes/user.sql';
 
         define('DB_HOST', 'localhost');
         define('DB_USER', 'root');
@@ -208,7 +208,7 @@ class CLIUtils {
             $commands = array_filter($commands);
 
             foreach ($commands as $command) {
-                echo "$command|\r\n";
+                //echo "$command\r\n------\r\n";
                 $db->query($command);
             }
         }

@@ -3,7 +3,7 @@ SET time_zone = "+00:00";
 DROP TABLE IF EXISTS `journal`;
 create table journal
 (
-    id       int auto_increment,
+    id       int auto_increment not null,
     juid     varchar(32)  COLLATE utf8mb4_general_ci not null,
     datetime timestamp   not null DEFAULT CURRENT_TIMESTAMP,
     ip       varchar(15) COLLATE utf8mb4_general_ci not null,

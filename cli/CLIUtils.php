@@ -30,6 +30,25 @@ class CLIUtils {
         return $randomString;
     }
 
+    public static function test($event) {
+        $vendorDirectory = $event->getComposer()->getConfig()->get('vendor-dir');
+        $rootDirectory = dirname($vendorDirectory);
+        chdir($rootDirectory);
+        include_once $rootDirectory . '/vendor/autoload.php';
+        //include_once 'config.php';
+
+        self::$includeSQLFiles[] = $rootDirectory . '/schemes/_journal.sql';
+
+        define('DB_HOST', 'localhost');
+        define('DB_USER', 'root');
+        define('DB_NAME', 'easyinput.kanasero');
+        define('DB_PREFIX', '');
+        define('DB_PASSWORD', '');
+        define('DB_CHARSET', 'UTF8');
+        self::processSQL();
+
+    }
+
     public static function postInstallCmd($event) {
         $vendorDirectory = $event->getComposer()->getConfig()->get('vendor-dir');
         $rootDirectory = dirname($vendorDirectory);
@@ -189,6 +208,7 @@ class CLIUtils {
             $commands = array_filter($commands);
 
             foreach ($commands as $command) {
+                echo "$command|\r\n";
                 $db->query($command);
             }
         }

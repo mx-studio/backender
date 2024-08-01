@@ -209,7 +209,7 @@ class CLIUtils {
 
             foreach ($commands as $command) {
                 $command = trim($command);
-                echo "\t\t$command\n------\n";
+                echo "\t\t$command\n\t\t------\n";
                 $db->query($command);
             }
         }

@@ -1,7 +1,7 @@
 {
     "name": "adjai/backender",
     "description": "Simple backend",
-    "version": "0.0.141",
+    "version": "0.0.142",
     "license": "GPL-2.0-or-later",
     "minimum-stability": "stable",
     "authors": [
@@ -27,7 +27,6 @@
         "files": ["backender.php"]
     },
     "scripts": {
-        "composer-update": "composer-update.cmd",
-        "post-install-cmd": "mx\\CLIUtils\\CLIUtils::postInstallCmd"
+        "composer-update": "composer-update.cmd"
     }
 }
